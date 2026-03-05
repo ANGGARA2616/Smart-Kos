@@ -10,6 +10,20 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* SmartKos Custom Colors */
+  --color-primary: #007bff; /* Main blue color used for buttons and highlights */
+  --color-primary-hover: #0056b3; 
+  --color-secondary: #f8f9fa; /* Light gray for secondary elements */
+  --color-secondary-hover: #e2e6ea;
+  --color-success: #28a745; /* Green for success badges (Tersedia, Aktif) */
+  --color-success-bg: #d4edda;
+  --color-danger: #dc3545; /* Red for alerts or full status (Penuh) */
+  --color-danger-bg: #f8d7da;
+  --color-warning: #ffc107; /* Yellow/Orange for warnings (Terbatas/Jatuh tempo) */
+  --color-warning-bg: #fff3cd;
+  --color-muted: #6c757d; /* Gray for muted text */
+  --color-sidebar: #f8f9fc; /* Light blueish gray for sidebar */
 }
 
 @media (prefers-color-scheme: dark) {

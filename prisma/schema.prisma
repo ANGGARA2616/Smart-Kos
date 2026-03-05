@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// === ENUMS ===
+
+enum Role {
+  ADMIN
+  PENGHUNI
+  CALON_PENGHUNI
+}
+
+enum StatusKamar {
+  KOSONG
+  TERISI
+  PERBAIKAN
+}
+
+enum StatusPembayaran {
+  UNPAID
+  PAID
+  OVERDUE
+}
+
+enum StatusTiket {
+  OPEN
+  PROSES
+  SELESAI
+}
+
+// === MODELS ===
+
+model User {
+  id        String   @id @default(uuid())
+  nama      String
+  email     String   @unique
+  password  String
+  no_hp     String
+  role      Role     @default(CALON_PENGHUNI)
+  kamar_id  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  kamar      Kamar?      @relation(fields: [kamar_id], references: [id])
+  transaksis Transaksi[]
+  tikets     Tiket[]
+}
+
+model Kamar {
+  id              String      @id @default(uuid())
+  nomor_kamar     String      @unique
+  tipe            String
+  harga_per_bulan Float
+  fasilitas       String      // Bisa diubah menjadi relasi tabel atau array string nantinya
+  status          StatusKamar @default(KOSONG)
+  foto_utama      String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  penghunis  User[]
+  transaksis Transaksi[]
+  tikets     Tiket[]
+}
+
+model Transaksi {
+  id                String           @id @default(uuid())
+  user_id           String
+  kamar_id          String
+  bulan             String           // e.g., "Oktober 2023"
+  total_tagihan     Float
+  status_pembayaran StatusPembayaran @default(UNPAID)
+  jatuh_tempo       DateTime
+  tanggal_bayar     DateTime?
+  bukti_transfer    String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  kamar Kamar @relation(fields: [kamar_id], references: [id], onDelete: Restrict)
+}
+
+model Tiket {
+  id           String      @id @default(uuid())
+  user_id      String
+  kamar_id     String
+  kategori     String
+  prioritas    String      // e.g., "Rendah", "Sedang", "Tinggi"
+  deskripsi    String      @db.Text
+  foto_kendala String?
+  status       StatusTiket @default(OPEN)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  kamar Kamar @relation(fields: [kamar_id], references: [id], onDelete: Cascade)
+}
