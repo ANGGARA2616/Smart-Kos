@@ -7,7 +7,8 @@ const NAV_ITEMS = [
     { href: "/admin", label: "Dasbor", icon: "⊞" },
     { href: "/admin/kamar", label: "Manajemen Kamar", icon: "🛏" },
     { href: "/admin/penghuni", label: "Data Penghuni", icon: "👥" },
-    { href: "/admin/pembayaran", label: "Pembayaran", icon: "💳" },
+    { href: "/admin/verifikasi", label: "Verifikasi Pembayaran", icon: "⏳" },
+    { href: "/admin/keluhan", label: "Keluhan Fasilitas", icon: "🔧" },
     { href: "/admin/laporan", label: "Laporan Keuangan", icon: "📊" },
     { href: "/admin/pengaturan", label: "Pengaturan", icon: "⚙️" },
 ];
@@ -54,8 +55,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
-                                        ? "bg-primary text-white shadow-md shadow-primary/30"
-                                        : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                    ? "bg-primary text-white shadow-md shadow-primary/30"
+                                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
                                     }`}
                             >
                                 <span className="text-base">{item.icon}</span>

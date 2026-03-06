@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import type { StatusKamar, Prisma as PrismaNamespace } from "@generated/prisma";
 
 import SearchFilterKamar from "@/components/admin/SearchFilterKamar";
@@ -24,6 +26,11 @@ export default async function ManajemenKamarPage({
 }: {
     searchParams: Promise<{ query?: string; status?: string }>;
 }) {
+    const session = await getSession();
+    if (!session || session.role !== "ADMIN") {
+        redirect("/login");
+    }
+
     // Resolve searchParams (Next.js 15+)
     const resolvedParams = await searchParams;
     const query = resolvedParams?.query || "";

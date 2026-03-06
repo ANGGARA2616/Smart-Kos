@@ -1,5 +1,7 @@
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 // =========================================================
 // DATA DUMMY — Nantinya diganti dengan data dari database
@@ -124,7 +126,12 @@ const kamarBadgeMap: Record<string, "success" | "danger" | "warning" | "neutral"
     PERBAIKAN: "danger",
 };
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+    const session = await getSession();
+    if (!session || session.role !== "ADMIN") {
+        redirect("/login");
+    }
+
     const today = new Date().toLocaleDateString("id-ID", {
         day: "numeric",
         month: "long",
@@ -256,7 +263,7 @@ export default function AdminDashboardPage() {
                                 className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-shadow cursor-default"
                             >
                                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${kamar.status === "TERISI" ? "bg-green-100" :
-                                        kamar.status === "PERBAIKAN" ? "bg-red-100" : "bg-gray-200"
+                                    kamar.status === "PERBAIKAN" ? "bg-red-100" : "bg-gray-200"
                                     }`}>
                                     🛏
                                 </div>

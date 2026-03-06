@@ -14,8 +14,18 @@ datasource db {
 
 enum Role {
   ADMIN
-  PENGHUNI
+  USER
+}
+
+enum StatusUser {
   CALON_PENGHUNI
+  PENGHUNI
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum StatusKamar {
@@ -44,12 +54,14 @@ model User {
   email     String   @unique
   password  String
   no_hp     String
-  role      Role     @default(CALON_PENGHUNI)
+  role      Role       @default(USER)
+  status    StatusUser @default(CALON_PENGHUNI)
   kamar_id  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   kamar      Kamar?      @relation(fields: [kamar_id], references: [id])
+  bookings   Booking[]
   transaksis Transaksi[]
   tikets     Tiket[]
 }
@@ -66,6 +78,7 @@ model Kamar {
   updatedAt       DateTime    @updatedAt
 
   penghunis  User[]
+  bookings   Booking[]
   transaksis Transaksi[]
   tikets     Tiket[]
 }
@@ -101,4 +114,17 @@ model Tiket {
 
   user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
   kamar Kamar @relation(fields: [kamar_id], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  user_id       String
+  kamar_id      String
+  payment_proof String?
+  status        BookingStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  kamar Kamar @relation(fields: [kamar_id], references: [id], onDelete: Restrict)
 }

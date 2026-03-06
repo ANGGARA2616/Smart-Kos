@@ -2,46 +2,13 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-
-// ============================================================
-// DATA DUMMY - Nantinya akan diganti dengan data dari database
-// ============================================================
+import Link from "next/link";
+import prisma from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
+import LandingNavbar from "@/components/LandingNavbar";
 
 const HERO_IMAGE_URL =
   "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1920&auto=format&fit=crop";
-
-const ROOMS_DATA = [
-  {
-    id: 1,
-    name: "Standard Single",
-    price: "1.500.000",
-    image:
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=600&auto=format&fit=crop",
-    badge: "HEMAT",
-    badgeVariant: "primary" as const,
-    features: ["Single Bed", "Kamar Mandi Luar", "WiFi Dasar"],
-  },
-  {
-    id: 2,
-    name: "Deluxe Queen",
-    price: "2.200.000",
-    image:
-      "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=600&auto=format&fit=crop",
-    badge: "POPULER",
-    badgeVariant: "success" as const,
-    features: ["Queen Bed", "Kamar Mandi Dalam", "AC & WiFi Cepat"],
-  },
-  {
-    id: 3,
-    name: "Executive Suite",
-    price: "3.500.000",
-    image:
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=600&auto=format&fit=crop",
-    badge: "MEWAH",
-    badgeVariant: "warning" as const,
-    features: ["King Bed", "Kamar Mandi Dalam", "Balkon & Dapur Kecil"],
-  },
-];
 
 const FACILITIES_DATA = [
   { icon: "📶", title: "WiFi Kecepatan Tinggi", desc: "Koneksi stabil hingga 100 Mbps di setiap kamar" },
@@ -70,53 +37,31 @@ const TESTIMONIALS_DATA = [
   {
     id: 3,
     name: "Jessica Pratama",
-    role: "Penghuni sejak 215",
+    role: "Penghuni sejak 2015",
     avatar: "JP",
     rating: 5,
     text: '"Sangat memuaskan dengan tempatnya, dekat dengan universitas, mudah ke mana-mana."',
   },
 ];
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const session = await getSession();
+
+  // Ambil data asli dari server
+  const dataKamar = await prisma.kamar.findMany({
+    where: { status: "KOSONG" }, // Tampilkan yang kosong saja (tersedia untuk dipesan)
+    take: 3,
+    orderBy: { createdAt: "desc" }
+  });
+
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
       {/* ========== NAVBAR ========== */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-base">
-                S
-              </div>
-              <span className="font-bold text-xl text-gray-900">SmartKos</span>
-            </div>
-
-            {/* Nav Links */}
-            <div className="hidden md:flex space-x-8 text-sm font-medium">
-              <a href="#" className="text-primary font-semibold border-b-2 border-primary py-5">Beranda</a>
-              <a href="#lokasi" className="text-gray-600 hover:text-gray-900 py-5 transition-colors">Lokasi</a>
-              <a href="#kamar" className="text-gray-600 hover:text-gray-900 py-5 transition-colors">Kamar</a>
-              <a href="#fasilitas" className="text-gray-600 hover:text-gray-900 py-5 transition-colors">Fasilitas</a>
-              <a href="#tentang" className="text-gray-600 hover:text-gray-900 py-5 transition-colors">Tentang Kami</a>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="hidden sm:inline-flex bg-white border border-gray-300 text-gray-800 hover:bg-gray-100"
-              >
-                Masuk
-              </Button>
-              <Button variant="primary" size="sm" className="shadow-md shadow-primary/20">
-                Daftar
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <div className="sticky top-0 z-50">
+        <LandingNavbar session={session} />
+      </div>
 
       {/* ========== HERO SECTION ========== */}
       <section className="relative w-full h-[520px] flex items-center justify-center overflow-hidden">
@@ -138,13 +83,15 @@ export default function Home() {
           <p className="text-base md:text-lg text-gray-200 mb-10 max-w-xl mx-auto font-light">
             Rasakan kenyamanan di kost premium kami yang berlokasi strategis di seluruh kota. Dikelola secara profesional untuk ketenangan Anda.
           </p>
-          <Button
-            variant="primary"
-            size="lg"
-            className="shadow-xl shadow-primary/30 font-semibold px-10 rounded-full"
-          >
-            Pesan Sekarang →
-          </Button>
+          <Link href={session ? (session.role === "ADMIN" ? "/admin" : "/dashboard") : "/register"}>
+            <Button
+              variant="primary"
+              size="lg"
+              className="shadow-xl shadow-primary/30 font-semibold px-10 rounded-full"
+            >
+              Cari Kamar Sekarang →
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -152,53 +99,59 @@ export default function Home() {
       <section id="kamar" className="bg-slate-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Tipe Kamar Tersedia</h2>
-            <a href="#" className="text-primary hover:underline text-sm font-semibold flex items-center gap-1">
-              Lihat semua kamar <span>→</span>
-            </a>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Kamar Tersedia untuk Anda</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {ROOMS_DATA.map((room) => (
+            {dataKamar.length === 0 ? (
+              <p className="col-span-3 text-center text-gray-500 py-10">Maaf, saat ini seluruh kamar sedang penuh.</p>
+            ) : dataKamar.map((room) => (
               <Card
                 key={room.id}
                 className="flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-xl overflow-hidden border border-gray-100"
               >
                 {/* Room Image */}
-                <div className="relative w-full h-52 group overflow-hidden">
-                  <Image
-                    src={room.image}
-                    alt={room.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
+                <div className="relative w-full h-52 group overflow-hidden bg-gray-200 flex items-center justify-center text-gray-400">
+                  {room.foto_utama ? (
+                    <Image
+                      src={room.foto_utama}
+                      alt={room.tipe}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : <span>Tanpa Foto</span>}
+
                   <Badge
-                    variant={room.badgeVariant}
+                    variant="success"
                     className="absolute top-3 right-3 shadow text-xs font-bold tracking-wide"
                   >
-                    {room.badge}
+                    KOSONG
                   </Badge>
                 </div>
 
                 {/* Room Info */}
                 <CardBody className="flex flex-col flex-grow bg-white">
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{room.name}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{room.tipe}</h3>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-2xl font-black text-gray-900">Rp {room.price}</span>
+                    <span className="text-2xl font-black text-gray-900">Rp {room.harga_per_bulan.toLocaleString('id-ID')}</span>
                     <span className="text-sm text-gray-500 font-normal">/bulan</span>
                   </div>
                   <ul className="space-y-2 text-sm text-gray-700 font-medium mb-6 flex-grow">
-                    {room.features.map((feature, idx) => (
+                    {room.fasilitas.split(",").map((feature, idx) => (
                       <li key={idx} className="flex items-center gap-2">
                         <span className="text-primary text-base">✓</span>
-                        {feature}
+                        {feature.trim()}
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full border border-gray-300 rounded-lg py-2.5 text-sm font-semibold text-gray-800 hover:bg-primary hover:text-white hover:border-primary transition-colors">
-                    Lihat Detail
-                  </button>
+
+                  <Link href={session ? "/dashboard" : "/register"} className="w-full inline-block">
+                    <Button variant="primary" className="w-full py-2.5 text-sm font-semibold rounded-lg text-center font-bold">
+                      Pesan Sekarang
+                    </Button>
+                  </Link>
+
                 </CardBody>
               </Card>
             ))}
