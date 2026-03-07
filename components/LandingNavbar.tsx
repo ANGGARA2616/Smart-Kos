@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { logoutAction } from "@/app/actions";
 
-export default function LandingNavbar({ session }: { session: any }) {
+export default function LandingNavbar({ session, namaKost = "SmartKos" }: { session: any, namaKost?: string }) {
     const [activeMenu, setActiveMenu] = useState("beranda");
 
     const navLinks = [
@@ -29,7 +29,7 @@ export default function LandingNavbar({ session }: { session: any }) {
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-base">
                             S
                         </div>
-                        <span className="font-bold text-xl text-gray-900">SmartKos</span>
+                        <span className="font-bold text-xl text-gray-900">{namaKost}</span>
                     </div>
 
                     {/* Nav Links */}
@@ -42,8 +42,8 @@ export default function LandingNavbar({ session }: { session: any }) {
                                     href={link.href}
                                     onClick={() => handleNavClick(link.id)}
                                     className={`py-5 border-b-2 transition-colors flex items-center ${isActive
-                                            ? "text-primary font-semibold border-primary"
-                                            : "text-gray-500 border-transparent hover:text-gray-900"
+                                        ? "text-primary font-semibold border-primary"
+                                        : "text-gray-500 border-transparent hover:text-gray-900"
                                         }`}
                                 >
                                     {link.name}

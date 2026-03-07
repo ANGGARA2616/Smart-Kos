@@ -128,3 +128,13 @@ model Booking {
   user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
   kamar Kamar @relation(fields: [kamar_id], references: [id], onDelete: Restrict)
 }
+
+model KostProfile {
+  id           String   @id @default(uuid())
+  nama_kost    String
+  alamat       String   @db.Text
+  nomor_kontak String
+  deskripsi    String   @db.Text
+  hero_title   String   @default("Temukan Hunian Modern Impianmu")
+  updatedAt    DateTime @updatedAt
+}

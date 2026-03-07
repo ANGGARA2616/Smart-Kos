@@ -49,6 +49,19 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const session = await getSession();
 
+  let kostProfile = await prisma.kostProfile.findFirst();
+  if (!kostProfile) {
+    kostProfile = {
+      id: 'default',
+      nama_kost: "SmartKos Exclusive",
+      deskripsi: "Kost premium khusus karyawan dan mahasiswa dengan fasilitas bintang 5 dan keamanan 24 jam.",
+      nomor_kontak: "081234567890",
+      alamat: "Jl. Mawar No. 123, SCBD, Jakarta Selatan. 12190",
+      hero_title: "Temukan Hunian Modern Impianmu",
+      updatedAt: new Date()
+    };
+  }
+
   // Ambil data asli dari server
   const dataKamar = await prisma.kamar.findMany({
     where: { status: "KOSONG" }, // Tampilkan yang kosong saja (tersedia untuk dipesan)
@@ -60,7 +73,7 @@ export default async function Home() {
     <div className="min-h-screen bg-white flex flex-col font-sans">
       {/* ========== NAVBAR ========== */}
       <div className="sticky top-0 z-50">
-        <LandingNavbar session={session} />
+        <LandingNavbar session={session} namaKost={kostProfile.nama_kost} />
       </div>
 
       {/* ========== HERO SECTION ========== */}
@@ -68,7 +81,7 @@ export default async function Home() {
         <div className="absolute inset-0 z-0">
           <Image
             src={HERO_IMAGE_URL}
-            alt="Modern Kos Room"
+            alt={`${kostProfile.nama_kost} Room`}
             fill
             className="object-cover"
             priority
@@ -77,11 +90,17 @@ export default async function Home() {
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 text-center text-white">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-5 drop-shadow leading-tight">
-            Temukan Hunian Modern <br /> Impianmu
+          <div className="mb-6 mx-auto w-max">
+            <span className="text-sm font-black tracking-widest uppercase py-1.5 px-4 rounded-full bg-white/10 text-white border border-white/20 backdrop-blur-md">
+              {kostProfile.nama_kost}
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-5 drop-shadow leading-tight whitespace-pre-line">
+            {kostProfile.hero_title.replace(/\\n/g, "\n")}
           </h1>
-          <p className="text-base md:text-lg text-gray-200 mb-10 max-w-xl mx-auto font-light">
-            Rasakan kenyamanan di kost premium kami yang berlokasi strategis di seluruh kota. Dikelola secara profesional untuk ketenangan Anda.
+          <p className="text-base md:text-lg text-gray-200 mb-10 max-w-xl mx-auto font-light leading-relaxed">
+            {kostProfile.deskripsi}
           </p>
           <Link href={session ? (session.role === "ADMIN" ? "/admin" : "/dashboard") : "/register"}>
             <Button
@@ -212,11 +231,10 @@ export default async function Home() {
             {/* Map Dummy */}
             <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-lg h-80 bg-gray-100 relative flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-green-50 to-slate-100 flex items-center justify-center">
-                <div className="bg-white rounded-2xl shadow-xl p-5 flex flex-col items-center gap-2 border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-xl p-5 flex flex-col items-center gap-2 border border-gray-100 text-center max-w-[80%]">
                   <span className="text-4xl">📍</span>
-                  <p className="font-bold text-gray-900 text-sm">SmartKos Residence</p>
-                  <p className="text-xs text-gray-500">5 Lokasi Tersedia</p>
-                  <Badge variant="success" className="mt-1">Peta Interaktif</Badge>
+                  <p className="font-bold text-gray-900 text-sm mt-2">{kostProfile.nama_kost}</p>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed">{kostProfile.alamat}</p>
                 </div>
               </div>
             </div>
@@ -263,12 +281,20 @@ export default async function Home() {
             {/* Brand */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">S</div>
-                <span className="font-bold text-white text-lg">SmartKos</span>
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">{kostProfile.nama_kost.charAt(0)}</div>
+                <span className="font-bold text-white text-lg">{kostProfile.nama_kost}</span>
               </div>
-              <p className="text-sm leading-relaxed">
-                Temukan hunian terbaik yang nyaman, aman, dan terjangkau bersama kami.
+              <p className="text-sm leading-relaxed mb-4">
+                {kostProfile.deskripsi}
               </p>
+              <div className="space-y-2 mt-4">
+                <div className="flex items-start gap-2 text-xs text-gray-400">
+                  <span>📍</span> <span>{kostProfile.alamat}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <span>💬</span> <span>{kostProfile.nomor_kontak}</span>
+                </div>
+              </div>
             </div>
 
             {/* Perusahaan */}
@@ -303,7 +329,7 @@ export default async function Home() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-xs text-gray-600">
-            © 2024 SmartKos. Hak Cipta dilindungi undang-undang.
+            © {new Date().getFullYear()} {kostProfile.nama_kost}. Hak Cipta dilindungi undang-undang.
           </div>
         </div>
       </footer>

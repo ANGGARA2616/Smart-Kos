@@ -7,8 +7,20 @@ import prisma from "@/lib/prisma";
 import type { StatusKamar } from "@generated/prisma";
 import { notFound } from "next/navigation";
 
-export default async function EditKamarPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditKamarPage({
+    params,
+    searchParams
+}: {
+    params: Promise<{ id: string }>,
+    searchParams: Promise<{ from?: string }>
+}) {
     const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
+    const from = resolvedSearchParams?.from;
+
+    const backUrl = from === 'penghuni' ? '/admin/penghuni' : '/admin/kamar';
+    const backLabel = from === 'penghuni' ? '← Kembali ke Data Penghuni' : '← Kembali ke Daftar Kamar';
+
     const kamar = await prisma.kamar.findUnique({
         where: { id: resolvedParams.id },
     });
@@ -28,6 +40,7 @@ export default async function EditKamarPage({ params }: { params: Promise<{ id: 
         const status = formData.get("status") as StatusKamar;
         const fasilitas = formData.get("fasilitas") as string;
         const id = formData.get("id") as string;
+        const targetUrl = formData.get("backUrl") as string || "/admin/kamar";
 
         // Validasi dasar
         if (!nomor_kamar || !tipe || !harga_per_bulan || !status || !fasilitas || !id) {
@@ -46,17 +59,17 @@ export default async function EditKamarPage({ params }: { params: Promise<{ id: 
             },
         });
 
-        // Hapus cache halaman daftar kamar dan kembali ke sana
-        revalidatePath("/admin/kamar");
-        redirect("/admin/kamar");
+        // Hapus cache halaman asal dan kembali ke sana
+        revalidatePath(targetUrl);
+        redirect(targetUrl);
     }
 
     return (
         <div className="p-8 bg-gray-50 min-h-full">
             {/* Header */}
             <div className="mb-8">
-                <Link href="/admin/kamar" className="text-sm text-gray-500 hover:text-primary mb-2 inline-flex items-center gap-1 font-medium">
-                    ← Kembali ke Daftar Kamar
+                <Link href={backUrl} className="text-sm text-gray-500 hover:text-primary mb-2 inline-flex items-center gap-1 font-medium">
+                    {backLabel}
                 </Link>
                 <h1 className="text-2xl font-bold text-gray-900 mt-2">Edit Data Kamar</h1>
                 <p className="text-gray-500 text-sm mt-0.5">
@@ -71,6 +84,7 @@ export default async function EditKamarPage({ params }: { params: Promise<{ id: 
                         <form action={editKamar} className="space-y-6">
 
                             <input type="hidden" name="id" value={kamar.id} />
+                            <input type="hidden" name="backUrl" value={backUrl} />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Nomor Kamar */}
@@ -167,7 +181,7 @@ export default async function EditKamarPage({ params }: { params: Promise<{ id: 
 
                             {/* Actions */}
                             <div className="pt-6 border-t border-gray-100 flex items-center justify-end gap-3 mt-8">
-                                <Link href="/admin/kamar">
+                                <Link href={backUrl}>
                                     <span className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors inline-block cursor-pointer">
                                         Batal
                                     </span>
