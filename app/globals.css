@@ -1,29 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4faff;
+  --foreground: #00374a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: 'Manrope', var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono);
   
-  /* SmartKos Custom Colors */
-  --color-primary: #007bff; /* Main blue color used for buttons and highlights */
-  --color-primary-hover: #0056b3; 
-  --color-secondary: #f8f9fa; /* Light gray for secondary elements */
-  --color-secondary-hover: #e2e6ea;
-  --color-success: #28a745; /* Green for success badges (Tersedia, Aktif) */
+  /* SmartKos Premium Design Tokens */
+  --color-primary: #1a677c;
+  --color-primary-hover: #005b6f;
+  --color-primary-dim: #005b6f;
+  --color-primary-container: #9ee1f9;
+  --color-on-primary: #f1faff;
+  --color-on-primary-container: #005264;
+
+  --color-secondary: #6d5778;
+  --color-secondary-container: #f5d9ff;
+  --color-on-secondary: #fff7fc;
+
+  --color-surface: #f4faff;
+  --color-surface-dim: #abe1ff;
+  --color-surface-bright: #f4faff;
+  --color-surface-container: #dbf1ff;
+  --color-surface-container-low: #e8f6ff;
+  --color-surface-container-high: #ceedff;
+  --color-surface-container-highest: #c1e8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-variant: #c1e8ff;
+
+  --color-on-surface: #00374a;
+  --color-on-surface-variant: #34657b;
+
+  --color-outline: #528198;
+  --color-outline-variant: #89b8d2;
+
+  --color-tertiary: #b62430;
+  --color-tertiary-container: #ff9e9c;
+
+  --color-success: #28a745;
   --color-success-bg: #d4edda;
-  --color-danger: #dc3545; /* Red for alerts or full status (Penuh) */
+  --color-danger: #dc3545;
   --color-danger-bg: #f8d7da;
-  --color-warning: #ffc107; /* Yellow/Orange for warnings (Terbatas/Jatuh tempo) */
+  --color-warning: #ffc107;
   --color-warning-bg: #fff3cd;
-  --color-muted: #6c757d; /* Gray for muted text */
-  --color-sidebar: #f8f9fc; /* Light blueish gray for sidebar */
+  --color-muted: #6c757d;
+  --color-sidebar: #f8f9fc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,8 +59,123 @@
   }
 }
 
+/* ===== Global Base ===== */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Manrope', Arial, Helvetica, sans-serif;
+}
+
+/* ===== Premium Utilities ===== */
+.premium-shadow {
+  box-shadow: 0 20px 40px rgba(0, 55, 74, 0.06);
+}
+
+.premium-shadow-lg {
+  box-shadow: 0 25px 50px -12px rgba(0, 55, 74, 0.12);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(0, 55, 74, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ===== Smooth Scroll ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== Gradient Text ===== */
+.gradient-text {
+  background: linear-gradient(135deg, #1a677c 0%, #005b6f 50%, #34657b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== Animated Gradient Background ===== */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, #1a677c, #005b6f, #34657b, #528198);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* ===== Fade-in Animation ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up-delay-1 {
+  animation: fadeInUp 0.6s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-2 {
+  animation: fadeInUp 0.6s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-3 {
+  animation: fadeInUp 0.6s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* ===== Floating animation ===== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float 3s ease-in-out 1.5s infinite;
+}
+
+/* ===== Pulse Glow ===== */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(26, 103, 124, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(26, 103, 124, 0.4); }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ===== Modal Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }

@@ -6,17 +6,21 @@ import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import type { StatusKamar } from "@generated/prisma";
 import { notFound } from "next/navigation";
+import { writeFile } from "fs/promises";
+import { join } from "path";
+import Image from "next/image";
 
 export default async function EditKamarPage({
     params,
     searchParams
 }: {
     params: Promise<{ id: string }>,
-    searchParams: Promise<{ from?: string }>
+    searchParams: Promise<{ from?: string, error?: string }>
 }) {
     const resolvedParams = await params;
     const resolvedSearchParams = await searchParams;
     const from = resolvedSearchParams?.from;
+    const errorMsg = resolvedSearchParams?.error;
 
     const backUrl = from === 'penghuni' ? '/admin/penghuni' : '/admin/kamar';
     const backLabel = from === 'penghuni' ? '← Kembali ke Data Penghuni' : '← Kembali ke Daftar Kamar';
@@ -29,11 +33,15 @@ export default async function EditKamarPage({
         notFound();
     }
 
+    // Cek apakah kamar saat ini memiliki penghuni aktif
+    const penghuniAktif = await prisma.user.findFirst({
+        where: { kamar_id: kamar.id, status: "PENGHUNI" }
+    });
+
     // Server Action untuk memproses pembaruan
     async function editKamar(formData: FormData) {
         "use server";
 
-        // Ambil data dari form
         const nomor_kamar = formData.get("nomor_kamar") as string;
         const tipe = formData.get("tipe") as string;
         const harga_per_bulan = parseInt(formData.get("harga_per_bulan") as string, 10);
@@ -41,13 +49,49 @@ export default async function EditKamarPage({
         const fasilitas = formData.get("fasilitas") as string;
         const id = formData.get("id") as string;
         const targetUrl = formData.get("backUrl") as string || "/admin/kamar";
+        const file = formData.get("foto_kamar") as File;
 
-        // Validasi dasar
         if (!nomor_kamar || !tipe || !harga_per_bulan || !status || !fasilitas || !id) {
-            throw new Error("Semua kolom harus diisi!");
+             redirect(`/admin/kamar/${id}/edit?error=Semua kolom wajib diisi`);
         }
 
-        // Update PostgreSQL via Prisma
+        // --- CEK DUPLIKASI NOMOR KAMAR (Namun kecualikan ID kamar yang sedang di-edit ini) ---
+        const existingKamar = await prisma.kamar.findUnique({
+             where: { nomor_kamar }
+        });
+
+        if (existingKamar && existingKamar.id !== id) {
+             redirect(`/admin/kamar/${id}/edit?error=Nomor Kamar ${nomor_kamar} sudah digunakan oleh kamar lain. Silakan gunakan nomor yang berbeda.`);
+        }
+
+        // === LOGIKA PROTEKSI: Cegah ubah TERISI→KOSONG jika masih ada penghuni ===
+        const currentKamar = await prisma.kamar.findUnique({ where: { id } });
+        if (currentKamar && currentKamar.status === "TERISI" && status === "KOSONG") {
+            const adaPenghuni = await prisma.user.findFirst({
+                where: { kamar_id: id, status: "PENGHUNI" }
+            });
+            if (adaPenghuni) {
+                // Keluarkan penghuni dari kamar: ubah status user kembali ke CALON_PENGHUNI dan lepas kamar_id
+                await prisma.user.update({
+                    where: { id: adaPenghuni.id },
+                    data: { status: "CALON_PENGHUNI", kamar_id: null }
+                });
+            }
+        }
+
+        // === UPLOAD FOTO (opsional) ===
+        let foto_utama = currentKamar?.foto_utama ?? null;
+        if (file && file.size > 0) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const timestamp = Date.now();
+            const ext = file.name.split('.').pop() || 'jpg';
+            const filename = `kamar-${timestamp}.${ext}`;
+            const uploadDir = join(process.cwd(), "public", "uploads");
+            await writeFile(join(uploadDir, filename), buffer);
+            foto_utama = `/uploads/${filename}`;
+        }
+
         await prisma.kamar.update({
             where: { id },
             data: {
@@ -56,11 +100,12 @@ export default async function EditKamarPage({
                 harga_per_bulan,
                 status,
                 fasilitas,
+                foto_utama,
             },
         });
 
-        // Hapus cache halaman asal dan kembali ke sana
         revalidatePath(targetUrl);
+        revalidatePath("/admin/kamar");
         redirect(targetUrl);
     }
 
@@ -81,10 +126,39 @@ export default async function EditKamarPage({
             <div className="max-w-3xl">
                 <Card className="border-none shadow-sm">
                     <CardBody className="p-8">
+                        {errorMsg && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl flex items-center gap-3">
+                                <span className="text-xl">⚠️</span>
+                                <p>{errorMsg}</p>
+                            </div>
+                        )}
+
                         <form action={editKamar} className="space-y-6">
 
                             <input type="hidden" name="id" value={kamar.id} />
                             <input type="hidden" name="backUrl" value={backUrl} />
+
+                            {/* Foto Kamar */}
+                            <div className="space-y-3">
+                                <label className="block text-sm font-semibold text-gray-700">
+                                    Foto Kamar
+                                </label>
+                                {kamar.foto_utama && (
+                                    <div className="relative w-full h-48 rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
+                                        <Image src={kamar.foto_utama} alt={kamar.tipe} fill className="object-cover" />
+                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-3">
+                                            <p className="text-white text-xs font-semibold">Foto saat ini</p>
+                                        </div>
+                                    </div>
+                                )}
+                                <input
+                                    type="file"
+                                    name="foto_kamar"
+                                    accept="image/*"
+                                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-gray-200 rounded-lg p-1.5 bg-white outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                                />
+                                <p className="text-xs text-gray-400">Kosongkan jika tidak ingin mengubah foto. Maks 5MB.</p>
+                            </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Nomor Kamar */}
@@ -103,23 +177,20 @@ export default async function EditKamarPage({
                                     />
                                 </div>
 
-                                {/* Tipe Kamar */}
+                                {/* Tipe Kamar — Input Manual */}
                                 <div className="space-y-2">
                                     <label htmlFor="tipe" className="block text-sm font-semibold text-gray-700">
                                         Tipe Kamar <span className="text-red-500">*</span>
                                     </label>
-                                    <select
+                                    <input
+                                        type="text"
                                         id="tipe"
                                         name="tipe"
                                         required
                                         defaultValue={kamar.tipe}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm bg-white"
-                                    >
-                                        <option value="" disabled>Pilih Tipe Kamar</option>
-                                        <option value="Standard Single">Standard Single</option>
-                                        <option value="Deluxe Queen">Deluxe Queen</option>
-                                        <option value="Executive Suite">Executive Suite</option>
-                                    </select>
+                                        placeholder="Contoh: Standard Single, Deluxe Queen"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm"
+                                    />
                                 </div>
                             </div>
 
@@ -159,6 +230,15 @@ export default async function EditKamarPage({
                                         <option value="TERISI">Terisi</option>
                                         <option value="PERBAIKAN">Dalam Perbaikan</option>
                                     </select>
+                                    {penghuniAktif && (
+                                        <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg mt-1">
+                                            <span className="text-amber-600 text-base">⚠️</span>
+                                            <p className="text-xs text-amber-700 font-semibold leading-relaxed">
+                                                Kamar ini sedang ditempati <strong>{penghuniAktif.nama}</strong>. 
+                                                Jika Anda mengubah status ke "Kosong", penghuni akan otomatis dikeluarkan dari kamar ini.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 

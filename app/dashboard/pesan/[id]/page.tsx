@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import CheckoutForm from "./CheckoutForm";
 import Link from "next/link";
 import Image from "next/image";
+import CopyButton from "@/components/CopyButton";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,8 @@ export default async function PesanKamarPage({ params }: { params: Promise<{ id:
     const kamar = await prisma.kamar.findUnique({
         where: { id }
     });
+
+    const kostProfile = await prisma.kostProfile.findFirst();
 
     if (!kamar || kamar.status !== "KOSONG") {
         notFound();
@@ -63,7 +66,7 @@ export default async function PesanKamarPage({ params }: { params: Promise<{ id:
                                 </div>
                                 <div className="pt-4 mt-2 border-t border-dashed border-gray-200">
                                     <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
-                                        <p className="text-primary font-bold text-sm mb-1 uppercase">Total Tagihan (Bulan 1)</p>
+                                        <p className="text-primary font-bold text-sm mb-1 uppercase">Harga Per Bulan</p>
                                         <p className="font-black text-gray-900 text-3xl">Rp {kamar.harga_per_bulan.toLocaleString("id-ID")}</p>
                                     </div>
                                 </div>
@@ -84,27 +87,25 @@ export default async function PesanKamarPage({ params }: { params: Promise<{ id:
                                 <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div>
                                         <div className="flex items-center gap-2 mb-1.5">
-                                            <span className="text-xs text-white bg-blue-600 px-2 py-0.5 rounded uppercase font-bold tracking-wider">BCA</span>
-                                            <p className="text-sm font-semibold text-gray-600">Bank Central Asia</p>
+                                            <span className="text-xs text-white bg-blue-600 px-2 py-0.5 rounded uppercase font-bold tracking-wider">{kostProfile?.nama_bank || "BCA"}</span>
+                                            <p className="text-sm font-semibold text-gray-600">Transfer Bank</p>
                                         </div>
-                                        <p className="text-3xl font-black text-gray-900 font-mono tracking-widest mt-1">8732 100 200</p>
-                                        <p className="text-sm font-medium text-gray-600 mt-1">a.n. PT SmartKos Indonesia</p>
+                                        <p className="text-2xl font-black text-gray-900 font-mono tracking-widest mt-1">{kostProfile?.nomor_rekening || "1234 5678 90"}</p>
+                                        <p className="text-[13px] font-bold text-gray-500 mt-0.5 bg-gray-200/50 inline-block px-2 py-0.5 rounded text-gray-600">a.n. {kostProfile?.nama_pemilik_rekening || "PT SmartKos Indonesia"}</p>
                                     </div>
-                                    <Button variant="secondary" className="border-gray-300 text-sm whitespace-nowrap bg-white text-gray-700 hover:text-black hover:border-black">
-                                        Salin Nomor
-                                    </Button>
+                                    <CopyButton textToCopy={kostProfile?.nomor_rekening || "1234567890"} />
                                 </div>
                             </div>
 
                             <div className="mb-8 pt-6 border-t border-dashed border-gray-200">
                                 <p className="text-[15px] font-semibold text-gray-800 mb-4 text-center md:text-left">2. Atau scan QRIS dari semua E-Wallet:</p>
                                 <div className="flex justify-center md:justify-start">
-                                    <div className="w-56 h-56 bg-slate-50 rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-3">
+                                    <div className="w-56 h-56 bg-slate-50 rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-3 relative overflow-hidden">
                                         <Image
-                                            src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
-                                            alt="QRIS Demo" width={160} height={160} className="opacity-90 grayscale contrast-150"
+                                            src={kostProfile?.foto_qris || "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"}
+                                            alt="QRIS Pembayaran" width={160} height={160} className={kostProfile?.foto_qris ? "w-full h-full object-contain" : "opacity-90 grayscale contrast-150"}
                                         />
-                                        <span className="text-xs font-bold text-gray-400 mt-2 uppercase tracking-wider">Demo QR Tuju</span>
+                                        {!kostProfile?.foto_qris && <span className="text-xs font-bold text-gray-400 mt-2 uppercase tracking-wider">Demo QR Tuju</span>}
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +116,7 @@ export default async function PesanKamarPage({ params }: { params: Promise<{ id:
                         <CardBody className="p-8 bg-blue-50/20 overflow-hidden">
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Unggah Bukti Transaksi</h2>
                             <p className="text-sm text-gray-500 mb-6">Pastikan tanggal dan nominal transfer terlihat jelas untuk mempercepat proses verifikasi.</p>
-                            <CheckoutForm kamarId={kamar.id} />
+                            <CheckoutForm kamarId={kamar.id} hargaPerBulan={kamar.harga_per_bulan} />
                         </CardBody>
                     </Card>
                 </div>

@@ -48,6 +48,7 @@ export default async function VerifikasiPage() {
                                     <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
                                     <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Calon Penghuni</th>
                                     <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kamar & Tipe</th>
+                                    <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Sewa & Tagihan</th>
                                     <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Bukti Transfer</th>
                                     <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Aksi</th>
                                 </tr>
@@ -65,6 +66,10 @@ export default async function VerifikasiPage() {
                                         <td className="px-4 py-4">
                                             <p className="font-bold text-primary">#{b.kamar.nomor_kamar}</p>
                                             <p className="text-xs text-gray-500">{b.kamar.tipe}</p>
+                                        </td>
+                                        <td className="px-4 py-4">
+                                            <p className="font-bold text-gray-900">{b.durasi_sewa} Bulan</p>
+                                            <p className="text-xs text-gray-500 font-semibold text-orange-600">Rp {b.total_harga.toLocaleString('id-ID')}</p>
                                         </td>
                                         <td className="px-4 py-4">
                                             {b.payment_proof ? (

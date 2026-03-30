@@ -38,6 +38,14 @@ export default async function DashboardPage() {
             ? approvedBooking.createdAt.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' })
             : "Data tidak tersedia";
 
+        const tanggalBerakhir = approvedBooking?.tanggal_berakhir
+            ? approvedBooking.tanggal_berakhir.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' })
+            : "Belum Diatur";
+
+        const pendingExtension = await prisma.booking.findFirst({
+            where: { user_id: session.userId, kamar_id: user.kamar.id, status: "PENDING" }
+        });
+
         return (
             <div className="max-w-4xl mx-auto mt-6">
                 <div className="mb-8">
@@ -52,7 +60,7 @@ export default async function DashboardPage() {
                             {user.kamar.foto_utama ? (
                                 <Image src={user.kamar.foto_utama} alt={user.kamar.tipe} fill className="object-cover" />
                             ) : (
-                                <div className="absolute inset-0 bg-primary/20 flex justify-center items-center text-primary/50 text-4xl">🛏</div>
+                                <div className="absolute inset-0 bg-primary/20 flex justify-center items-center text-primary/50 text-4xl"><span className="material-symbols-outlined text-[48px]">bed</span></div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent flex flex-col justify-end p-5">
                                 <span className="text-white font-bold text-xl">Kamar #{user.kamar.nomor_kamar}</span>
@@ -74,6 +82,25 @@ export default async function DashboardPage() {
                                     <p className="text-xs text-gray-500 mb-0.5 font-medium">Tanggal Masuk (Disetujui)</p>
                                     <p className="text-sm font-semibold text-gray-900">{tanggalMasuk}</p>
                                 </div>
+
+                                <div className="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-gray-500 mb-0.5 font-medium">Sewa Berakhir Pada</p>
+                                        <p className="text-sm font-semibold text-orange-600">{tanggalBerakhir}</p>
+                                    </div>
+
+                                    {pendingExtension ? (
+                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-200">
+                                            <span className="material-symbols-outlined text-[14px]">hourglass_empty</span> Menunggu Verifikasi
+                                        </div>
+                                    ) : (
+                                        <Link href={`/dashboard/perpanjang/${user.kamar.id}`}>
+                                            <Button variant="primary" className="text-xs py-2 px-3 h-auto leading-none shadow-md shadow-primary/20 font-bold">
+                                                + Perpanjang Sewa
+                                            </Button>
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         </CardBody>
                     </Card>
@@ -82,7 +109,7 @@ export default async function DashboardPage() {
                     <div className="space-y-6">
                         <Card className="shadow-md shadow-primary/5 border border-primary/20 bg-blue-50/30">
                             <CardBody className="p-6 flex flex-col items-center justify-center text-center h-full min-h-[160px]">
-                                <span className="text-4xl mb-3">🔧</span>
+                                <span className="material-symbols-outlined text-[40px] text-primary mb-3">build</span>
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">Ada Masalah dengan Kamar?</h3>
                                 <p className="text-xs text-gray-500 mb-5">Laporkan kerusakan fasilitas seperti AC, Air, atau pintu agar segera kami perbaiki.</p>
 
@@ -96,7 +123,7 @@ export default async function DashboardPage() {
 
                         <Card className="shadow-sm border border-gray-100">
                             <CardBody className="p-6 flex flex-col items-center justify-center text-center">
-                                <span className="text-3xl mb-3">👨‍💼</span>
+                                <span className="material-symbols-outlined text-[40px] text-gray-500 mb-3">support_agent</span>
                                 <h3 className="text-base font-bold text-gray-900 mb-2">Hubungi Pengelola</h3>
                                 <p className="text-xs text-gray-500 mb-4">Chat kami via WhatsApp jika ada pertanyaan terkait administrasi atau perpanjangan.</p>
                                 <Button variant="secondary" className="w-full border-gray-300 text-sm font-semibold">
@@ -116,7 +143,7 @@ export default async function DashboardPage() {
     if (activeBooking && activeBooking.status === "PENDING") {
         return (
             <div className="max-w-xl mx-auto text-center mt-20 bg-white rounded-3xl shadow-sm border border-gray-100 p-12">
-                <span className="text-6xl mb-6 block">⏳</span>
+                <span className="material-symbols-outlined text-[64px] text-orange-500 mb-6 block">hourglass_empty</span>
                 <h1 className="text-2xl font-bold text-gray-900 mb-4">Menunggu Konfirmasi Admin</h1>
                 <p className="text-gray-600 mb-8 leading-relaxed text-sm">
                     Terima kasih! Bukti pembayaran Anda untuk kamar <strong>{activeBooking.kamar.tipe} (No. {activeBooking.kamar.nomor_kamar})</strong> sedang kami verifikasi. Proses verifikasi manual memakan waktu 1x24 jam.
@@ -149,7 +176,7 @@ export default async function DashboardPage() {
                 <p className="text-gray-500 text-sm mt-2">Silakan pilih kamar yang masih kosong untuk mulai menyewa dan ajukan bukti transfer Anda.</p>
                 {rejectedMessage && (
                     <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm font-semibold flex items-center gap-2">
-                        <span>⚠️</span> {rejectedMessage}
+                        <span className="material-symbols-outlined text-[20px]">warning</span> {rejectedMessage}
                     </div>
                 )}
             </div>
@@ -157,7 +184,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {dataKamar.length === 0 ? (
                     <div className="col-span-3 text-center text-gray-400 py-20 bg-white border border-dashed rounded-3xl border-gray-300">
-                        <span className="text-5xl block mb-4">🛏️</span>
+                        <span className="material-symbols-outlined text-[48px] block mb-4">bed</span>
                         <p className="font-semibold text-lg text-gray-500">Maaf, saat ini seluruh kamar sedang penuh.</p>
                         <p className="text-sm">Silakan cek secara berkala.</p>
                     </div>
@@ -196,7 +223,7 @@ export default async function DashboardPage() {
                             <ul className="space-y-2 text-sm text-gray-700 font-medium mb-6 flex-grow">
                                 {room.fasilitas.split(",").map((feature, idx) => (
                                     <li key={idx} className="flex items-center gap-2">
-                                        <span className="text-primary text-base">✓</span>
+                                        <span className="material-symbols-outlined text-[18px] text-primary">check_circle</span>
                                         {feature.trim()}
                                     </li>
                                 ))}

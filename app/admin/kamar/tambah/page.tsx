@@ -5,25 +5,53 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import type { StatusKamar } from "@generated/prisma";
+import { writeFile } from "fs/promises";
+import { join } from "path";
 
-export default function TambahKamarPage() {
-    // Server Action untuk memproses form
+export default async function TambahKamarPage({
+    searchParams
+}: {
+    searchParams: Promise<{ error?: string }>
+}) {
+    const errorMsg = (await searchParams)?.error;
+
     async function tambahKamar(formData: FormData) {
         "use server";
 
-        // Ambil data dari form
         const nomor_kamar = formData.get("nomor_kamar") as string;
         const tipe = formData.get("tipe") as string;
         const harga_per_bulan = parseInt(formData.get("harga_per_bulan") as string, 10);
         const status = formData.get("status") as StatusKamar;
         const fasilitas = formData.get("fasilitas") as string;
+        const file = formData.get("foto_kamar") as File;
 
-        // Validasi dasar
         if (!nomor_kamar || !tipe || !harga_per_bulan || !status || !fasilitas) {
-            throw new Error("Semua kolom harus diisi!");
+            redirect("/admin/kamar/tambah?error=Semua kolom harus diisi!");
         }
 
-        // Insert ke PostgreSQL via Prisma
+        // --- CEK DUPLIKASI NOMOR KAMAR ---
+        const existingKamar = await prisma.kamar.findUnique({
+            where: { nomor_kamar }
+        });
+
+        if (existingKamar) {
+            redirect(`/admin/kamar/tambah?error=Nomor Kamar ${nomor_kamar} sudah terdaftar. Silakan gunakan nomor unik lainnya!`);
+        }
+
+
+        // Upload foto jika ada
+        let foto_utama: string | null = null;
+        if (file && file.size > 0) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const timestamp = Date.now();
+            const ext = file.name.split('.').pop() || 'jpg';
+            const filename = `kamar-${timestamp}.${ext}`;
+            const uploadDir = join(process.cwd(), "public", "uploads");
+            await writeFile(join(uploadDir, filename), buffer);
+            foto_utama = `/uploads/${filename}`;
+        }
+
         await prisma.kamar.create({
             data: {
                 nomor_kamar,
@@ -31,12 +59,10 @@ export default function TambahKamarPage() {
                 harga_per_bulan,
                 status,
                 fasilitas,
-                // Foto default sementara jika diperlukan
-                foto_utama: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=200&auto=format&fit=crop",
+                foto_utama,
             },
         });
 
-        // Hapus cache halaman daftar kamar dan kembali ke sana
         revalidatePath("/admin/kamar");
         redirect("/admin/kamar");
     }
@@ -58,7 +84,28 @@ export default function TambahKamarPage() {
             <div className="max-w-3xl">
                 <Card className="border-none shadow-sm">
                     <CardBody className="p-8">
+                        {errorMsg && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl flex items-center gap-3">
+                                <span className="text-xl">⚠️</span>
+                                <p>{errorMsg}</p>
+                            </div>
+                        )}
+
                         <form action={tambahKamar} className="space-y-6">
+
+                            {/* Foto Kamar */}
+                            <div className="space-y-3">
+                                <label className="block text-sm font-semibold text-gray-700">
+                                    Foto Kamar
+                                </label>
+                                <input
+                                    type="file"
+                                    name="foto_kamar"
+                                    accept="image/*"
+                                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-gray-200 rounded-lg p-1.5 bg-white outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                                />
+                                <p className="text-xs text-gray-400">Opsional. Unggah foto kamar untuk ditampilkan (maks 5MB).</p>
+                            </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Nomor Kamar */}
@@ -76,23 +123,19 @@ export default function TambahKamarPage() {
                                     />
                                 </div>
 
-                                {/* Tipe Kamar */}
+                                {/* Tipe Kamar — Input Manual */}
                                 <div className="space-y-2">
                                     <label htmlFor="tipe" className="block text-sm font-semibold text-gray-700">
                                         Tipe Kamar <span className="text-red-500">*</span>
                                     </label>
-                                    <select
+                                    <input
+                                        type="text"
                                         id="tipe"
                                         name="tipe"
                                         required
-                                        defaultValue=""
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm bg-white"
-                                    >
-                                        <option value="" disabled>Pilih Tipe Kamar</option>
-                                        <option value="Standard Single">Standard Single</option>
-                                        <option value="Deluxe Queen">Deluxe Queen</option>
-                                        <option value="Executive Suite">Executive Suite</option>
-                                    </select>
+                                        placeholder="Contoh: Standard Single, Deluxe Queen"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm"
+                                    />
                                 </div>
                             </div>
 

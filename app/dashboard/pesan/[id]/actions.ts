@@ -13,6 +13,8 @@ export async function submitPembayaran(formData: FormData) {
 
     const kamar_id = formData.get("kamar_id") as string;
     const file = formData.get("bukti_transfer") as File;
+    const durasi_sewa = parseInt(formData.get("durasi_sewa") as string || "1");
+    const total_harga = parseInt(formData.get("total_harga") as string || "0");
 
     if (!file || file.size === 0) {
         return { error: "Bukti transfer berupa foto wajib diunggah." };
@@ -40,7 +42,9 @@ export async function submitPembayaran(formData: FormData) {
                 user_id: session.userId,
                 kamar_id,
                 payment_proof: relativePath,
-                status: "PENDING"
+                status: "PENDING",
+                durasi_sewa,
+                total_harga
             }
         });
 
