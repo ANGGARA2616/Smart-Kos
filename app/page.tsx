@@ -132,6 +132,18 @@ export default async function Home() {
     }
   }
 
+  // Generate external link khusus untuk tombol (Google memblokir `/maps/embed` dibuka di tab baru)
+  let externalGmapsUrl = cleanGmapsUrl;
+  if (cleanGmapsUrl && cleanGmapsUrl.includes("/maps/embed")) {
+    const latMatch = cleanGmapsUrl.match(/!3d([-0-9.]+)/);
+    const lngMatch = cleanGmapsUrl.match(/!2d([-0-9.]+)/);
+    if (latMatch && lngMatch) {
+        externalGmapsUrl = `https://www.google.com/maps?q=${latMatch[1]},${lngMatch[1]}`;
+    } else {
+        externalGmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(kostProfile.nama_kost + " " + kostProfile.alamat)}`;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-surface flex flex-col" style={{ fontFamily: "'Manrope', sans-serif" }}>
       {/* ========== NAVBAR ========== */}
@@ -396,8 +408,8 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-            {cleanGmapsUrl && (
-              <a href={cleanGmapsUrl} target="_blank" rel="noopener noreferrer">
+            {externalGmapsUrl && (
+              <a href={externalGmapsUrl} target="_blank" rel="noopener noreferrer">
                 <button className="px-5 py-3 md:px-8 md:py-4 bg-primary text-white text-sm md:text-base font-bold rounded-xl premium-shadow hover:bg-primary-dim transition-all active:scale-95 flex items-center gap-2">
                   <span className="material-symbols-outlined">map</span>
                   Buka di Google Maps
