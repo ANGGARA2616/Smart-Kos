@@ -4,8 +4,7 @@ import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { writeFile } from "fs/promises";
-import { join } from "path";
+import { uploadFile } from "@/lib/supabase-storage";
 
 export async function submitPembayaran(formData: FormData) {
     const session = await getSession();
@@ -21,27 +20,17 @@ export async function submitPembayaran(formData: FormData) {
     }
 
     try {
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        const publicUrl = await uploadFile(file, "bukti-transfer");
 
-        // Define a unique name
-        const timestamp = Date.now();
-        const fileExt = file.name.split('.').pop() || 'jpg';
-        const filename = `${timestamp}-${session.userId}.${fileExt}`;
-        const relativePath = `/uploads/${filename}`;
-        const uploadDir = join(process.cwd(), "public", "uploads");
-        const filepath = join(uploadDir, filename);
+        if (!publicUrl) {
+            return { error: "Gagal mengunggah bukti transfer. Silakan coba lagi." };
+        }
 
-        // Ensure we save it safely, but since standard create doesn't natively do mkdirp out of the box in simple JS, 
-        // We'll write it directly (Assuming /public/uploads will be generated or exists, I will create a .gitkeep later)
-        await writeFile(filepath, buffer);
-
-        // Update DB
         await prisma.booking.create({
             data: {
                 user_id: session.userId,
                 kamar_id,
-                payment_proof: relativePath,
+                payment_proof: publicUrl,
                 status: "PENDING",
                 durasi_sewa,
                 total_harga
@@ -50,7 +39,7 @@ export async function submitPembayaran(formData: FormData) {
 
     } catch (error) {
         console.error("Upload error: ", error);
-        return { error: "Gagal memproses pembayaran. Pastikan folder public/uploads sudah ada atau gunakan file gambar kecil." };
+        return { error: "Gagal memproses pembayaran. Silakan coba lagi." };
     }
 
     revalidatePath("/dashboard");

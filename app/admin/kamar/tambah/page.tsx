@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import type { StatusKamar } from "@generated/prisma";
-import { writeFile } from "fs/promises";
-import { join } from "path";
+import { uploadFile } from "@/lib/supabase-storage";
 
 export default async function TambahKamarPage({
     searchParams
@@ -39,17 +38,10 @@ export default async function TambahKamarPage({
         }
 
 
-        // Upload foto jika ada
+        // Upload foto ke Supabase Storage
         let foto_utama: string | null = null;
         if (file && file.size > 0) {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const timestamp = Date.now();
-            const ext = file.name.split('.').pop() || 'jpg';
-            const filename = `kamar-${timestamp}.${ext}`;
-            const uploadDir = join(process.cwd(), "public", "uploads");
-            await writeFile(join(uploadDir, filename), buffer);
-            foto_utama = `/uploads/${filename}`;
+            foto_utama = await uploadFile(file, "kamar");
         }
 
         await prisma.kamar.create({

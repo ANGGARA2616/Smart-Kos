@@ -6,8 +6,7 @@ import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import type { StatusKamar } from "@generated/prisma";
 import { notFound } from "next/navigation";
-import { writeFile } from "fs/promises";
-import { join } from "path";
+import { uploadFile } from "@/lib/supabase-storage";
 import Image from "next/image";
 
 export default async function EditKamarPage({
@@ -79,17 +78,11 @@ export default async function EditKamarPage({
             }
         }
 
-        // === UPLOAD FOTO (opsional) ===
+        // === UPLOAD FOTO ke Supabase Storage (opsional) ===
         let foto_utama = currentKamar?.foto_utama ?? null;
         if (file && file.size > 0) {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const timestamp = Date.now();
-            const ext = file.name.split('.').pop() || 'jpg';
-            const filename = `kamar-${timestamp}.${ext}`;
-            const uploadDir = join(process.cwd(), "public", "uploads");
-            await writeFile(join(uploadDir, filename), buffer);
-            foto_utama = `/uploads/${filename}`;
+            const uploadedUrl = await uploadFile(file, "kamar");
+            if (uploadedUrl) foto_utama = uploadedUrl;
         }
 
         await prisma.kamar.update({

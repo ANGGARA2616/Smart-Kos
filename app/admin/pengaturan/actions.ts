@@ -3,8 +3,7 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { writeFile } from "fs/promises";
-import { join } from "path";
+import { uploadFile, uploadMultipleFiles } from "@/lib/supabase-storage";
 
 export async function updateKostProfile(formData: FormData) {
     const id = formData.get("id") as string;
@@ -25,7 +24,6 @@ export async function updateKostProfile(formData: FormData) {
     
     // Support multiple slider images
     const rawFiles = formData.getAll("hero_images");
-    let sliderImages: string[] = [];
     const heroImageFiles = rawFiles.filter(f => f instanceof File && f.size > 0) as File[];
 
     if (!nama_kost || !alamat || !nomor_kontak || !deskripsi || !hero_title) {
@@ -35,86 +33,32 @@ export async function updateKostProfile(formData: FormData) {
     let foto_hero = undefined;
     let foto_qris = undefined;
     let logo_url = undefined;
+    let sliderImages: string[] = [];
 
+    // Upload logo
     if (file_logo && file_logo.size > 0) {
-        try {
-            const bytes = await file_logo.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const timestamp = Date.now();
-            const fileExt = file_logo.name.split('.').pop() || 'png';
-            const filename = `logo-${timestamp}.${fileExt}`;
-            const relativePath = `/uploads/${filename}`;
-            const uploadDir = join(process.cwd(), "public", "uploads");
-            const filepath = join(uploadDir, filename);
-
-            await writeFile(filepath, buffer);
-            logo_url = relativePath;
-        } catch (error) {
-            console.error("Upload Logo error: ", error);
-        }
+        const url = await uploadFile(file_logo, "logo");
+        if (url) logo_url = url;
     }
 
+    // Upload QRIS
     if (file_qris && file_qris.size > 0) {
-        try {
-            const bytes = await file_qris.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const timestamp = Date.now();
-            const fileExt = file_qris.name.split('.').pop() || 'jpg';
-            const filename = `qris-${timestamp}.${fileExt}`;
-            const relativePath = `/uploads/${filename}`;
-            const uploadDir = join(process.cwd(), "public", "uploads");
-            const filepath = join(uploadDir, filename);
-
-            await writeFile(filepath, buffer);
-            foto_qris = relativePath;
-        } catch (error) {
-            console.error("Upload QRIS error: ", error);
-            throw new Error("Gagal mengunggah foto QRIS.");
-        }
+        const url = await uploadFile(file_qris, "qris");
+        if (url) foto_qris = url;
     }
 
+    // Upload slider images (multiple)
     if (heroImageFiles.length > 0) {
-        for (const f of heroImageFiles) {
-            try {
-                const bytes = await f.arrayBuffer();
-                const buffer = Buffer.from(bytes);
-                const timestamp = Date.now();
-                const fileExt = f.name.split('.').pop() || 'jpg';
-                const filename = `slider-${timestamp}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const relativePath = `/uploads/${filename}`;
-                const uploadDir = join(process.cwd(), "public", "uploads");
-                const filepath = join(uploadDir, filename);
-
-                await writeFile(filepath, buffer);
-                sliderImages.push(relativePath);
-            } catch (error) {
-                console.error("Upload slider error: ", error);
-            }
-        }
+        sliderImages = await uploadMultipleFiles(heroImageFiles, "slider");
     }
 
+    // Upload foto hero utama
     if (file && file.size > 0) {
-        try {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            
-            const timestamp = Date.now();
-            const fileExt = file.name.split('.').pop() || 'jpg';
-            const filename = `hero-${timestamp}.${fileExt}`;
-            const relativePath = `/uploads/${filename}`;
-            const uploadDir = join(process.cwd(), "public", "uploads");
-            const filepath = join(uploadDir, filename);
-
-            await writeFile(filepath, buffer);
-            foto_hero = relativePath;
-        } catch (error) {
-            console.error("Upload error: ", error);
-            throw new Error("Gagal mengunggah foto hero.");
-        }
+        const url = await uploadFile(file, "hero");
+        if (url) foto_hero = url;
     }
 
     if (id) {
-        // Update existing
         await prisma.kostProfile.update({
             where: { id },
             data: { 
@@ -126,7 +70,6 @@ export async function updateKostProfile(formData: FormData) {
             }
         });
     } else {
-        // Create first time if not exists somehow
         await prisma.kostProfile.create({
             data: { 
                 nama_kost, alamat, nomor_kontak, deskripsi, hero_title, link_gmaps, foto_hero, nama_bank, nomor_rekening, nama_pemilik_rekening, foto_qris,
@@ -136,6 +79,6 @@ export async function updateKostProfile(formData: FormData) {
         });
     }
 
-    revalidatePath("/", "layout"); // Update all layouts
+    revalidatePath("/", "layout");
     redirect("/admin/pengaturan?success=1");
 }

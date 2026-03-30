@@ -4,8 +4,7 @@ import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { writeFile } from "fs/promises";
-import { join } from "path";
+import { uploadFile } from "@/lib/supabase-storage";
 
 export async function createLaporan(formData: FormData) {
     const session = await getSession();
@@ -33,17 +32,7 @@ export async function createLaporan(formData: FormData) {
 
     if (file && file.size > 0) {
         try {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-
-            const timestamp = Date.now();
-            const fileExt = file.name.split('.').pop() || 'jpg';
-            const filename = `tiket-${timestamp}-${session.userId}.${fileExt}`;
-            const relativePath = `/uploads/${filename}`;
-            const filepath = join(process.cwd(), "public", "uploads", filename);
-
-            await writeFile(filepath, buffer);
-            fotoKendalaPath = relativePath;
+            fotoKendalaPath = await uploadFile(file, "tiket");
         } catch (error) {
             console.error(error);
             return { error: "Gagal mengunggah foto kendala." };
