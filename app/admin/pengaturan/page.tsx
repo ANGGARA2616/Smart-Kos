@@ -162,12 +162,21 @@ export default async function SettingsPage({
                         </div>
 
                         <div className="space-y-2 pt-2">
-                            <label className="text-sm font-semibold text-gray-700">Tautan Peta (Google Maps Embed SRC)</label>
+                            <label className="text-sm font-semibold text-gray-700">Tautan Peta (Google Maps Embed SRC) untuk Halaman Utama</label>
                             <input
                                 type="text" name="link_gmaps" defaultValue={profile?.link_gmaps || ""} placeholder="https://www.google.com/maps/embed?pb=..."
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                             />
-                            <p className="text-xs text-gray-500">Ambil URL dari tag `src="..."` di Embed Map Google Maps.</p>
+                            <p className="text-xs text-gray-500">Ambil URL dari tag `src="..."` di Embed Map Google Maps (hanya digunakan untuk tampilan Maps iFrame Homepage).</p>
+                        </div>
+
+                        <div className="space-y-2 pt-2 border-t border-gray-100 mt-2 pt-4">
+                            <label className="text-sm font-semibold text-gray-700">Tautan Tombol "Buka di Google Maps"</label>
+                            <input
+                                type="text" name="link_gmaps_button" defaultValue={profile?.link_gmaps_button || ""} placeholder="https://maps.google.com/..."
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                            />
+                            <p className="text-xs text-gray-500">Gunakan tautan bagikan / share biasa dari Google Maps (jangan tipe embed) untuk ketika tombol Buka ditekan.</p>
                         </div>
 
                         <div className="pt-4 border-t border-gray-100 mt-6 pt-6">

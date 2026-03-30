@@ -99,6 +99,7 @@ export default async function Home() {
       foto_hero: null,
       hero_images: [],
       link_gmaps: null,
+      link_gmaps_button: null,
       nama_bank: "BCA",
       nomor_rekening: "1234567890",
       nama_pemilik_rekening: "PT SmartKos",
@@ -133,14 +134,18 @@ export default async function Home() {
   }
 
   // Generate external link khusus untuk tombol (Google memblokir `/maps/embed` dibuka di tab baru)
-  let externalGmapsUrl = cleanGmapsUrl;
-  if (cleanGmapsUrl && cleanGmapsUrl.includes("/maps/embed")) {
-    const latMatch = cleanGmapsUrl.match(/!3d([-0-9.]+)/);
-    const lngMatch = cleanGmapsUrl.match(/!2d([-0-9.]+)/);
-    if (latMatch && lngMatch) {
-        externalGmapsUrl = `https://www.google.com/maps?q=${latMatch[1]},${lngMatch[1]}`;
-    } else {
-        externalGmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(kostProfile.nama_kost + " " + kostProfile.alamat)}`;
+  let externalGmapsUrl = kostProfile.link_gmaps_button || "";
+
+  if (!externalGmapsUrl) {
+    externalGmapsUrl = cleanGmapsUrl;
+    if (cleanGmapsUrl && cleanGmapsUrl.includes("/maps/embed")) {
+      const latMatch = cleanGmapsUrl.match(/!3d([-0-9.]+)/);
+      const lngMatch = cleanGmapsUrl.match(/!2d([-0-9.]+)/);
+      if (latMatch && lngMatch) {
+          externalGmapsUrl = `https://www.google.com/maps?q=${latMatch[1]},${lngMatch[1]}`;
+      } else {
+          externalGmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(kostProfile.nama_kost + " " + kostProfile.alamat)}`;
+      }
     }
   }
 

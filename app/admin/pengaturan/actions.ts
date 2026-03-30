@@ -13,6 +13,7 @@ export async function updateKostProfile(formData: FormData) {
     const deskripsi = formData.get("deskripsi") as string;
     const hero_title = formData.get("hero_title") as string;
     const link_gmaps = formData.get("link_gmaps") as string;
+    const link_gmaps_button = formData.get("link_gmaps_button") as string;
     const file = formData.get("foto_hero") as File | null;
     
     // Payment Support
@@ -62,7 +63,7 @@ export async function updateKostProfile(formData: FormData) {
         await prisma.kostProfile.update({
             where: { id },
             data: { 
-                nama_kost, alamat, nomor_kontak, deskripsi, hero_title, link_gmaps, nama_bank, nomor_rekening, nama_pemilik_rekening,
+                nama_kost, alamat, nomor_kontak, deskripsi, hero_title, link_gmaps, link_gmaps_button, nama_bank, nomor_rekening, nama_pemilik_rekening,
                 ...(foto_hero && { foto_hero }),
                 ...(foto_qris && { foto_qris }),
                 ...(logo_url && { logo_url }),
@@ -72,7 +73,7 @@ export async function updateKostProfile(formData: FormData) {
     } else {
         await prisma.kostProfile.create({
             data: { 
-                nama_kost, alamat, nomor_kontak, deskripsi, hero_title, link_gmaps, foto_hero, nama_bank, nomor_rekening, nama_pemilik_rekening, foto_qris,
+                nama_kost, alamat, nomor_kontak, deskripsi, hero_title, link_gmaps, link_gmaps_button, foto_hero, nama_bank, nomor_rekening, nama_pemilik_rekening, foto_qris,
                 ...(logo_url && { logo_url }),
                 ...(sliderImages.length > 0 && { hero_images: sliderImages })
             }

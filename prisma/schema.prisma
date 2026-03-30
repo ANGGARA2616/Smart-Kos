@@ -142,6 +142,7 @@ model KostProfile {
   foto_hero      String?
   hero_images    String[]
   link_gmaps     String?  @db.Text
+  link_gmaps_button String?  @db.Text
   nama_bank      String   @default("BCA")
   nomor_rekening String   @default("1234567890")
   nama_pemilik_rekening String @default("PT SmartKos")
