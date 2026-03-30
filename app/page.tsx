@@ -116,6 +116,22 @@ export default async function Home() {
 
   const heroTitle = kostProfile.hero_title.replace(/\\n/g, "\n");
 
+  // === PREPARE GMAPS URL ===
+  let cleanGmapsUrl = kostProfile.link_gmaps || "";
+  if (cleanGmapsUrl) {
+    // Jika user nge-paste seluruh tag <iframe src="...">
+    const iframeMatch = cleanGmapsUrl.match(/<iframe.*?src=["'](.*?)["']/i);
+    if (iframeMatch) {
+      cleanGmapsUrl = iframeMatch[1];
+    } else if (cleanGmapsUrl.includes('"')) {
+      // Jika user nge-paste isi atribut src tapi ketambahan sisa atribut iframe
+      // contoh: https://... width="600"
+      cleanGmapsUrl = cleanGmapsUrl.split('"')[0].trim();
+    } else if (cleanGmapsUrl.includes(' ')) {
+      cleanGmapsUrl = cleanGmapsUrl.split(' ')[0].trim();
+    }
+  }
+
   return (
     <div className="min-h-screen bg-surface flex flex-col" style={{ fontFamily: "'Manrope', sans-serif" }}>
       {/* ========== NAVBAR ========== */}
@@ -326,10 +342,10 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
           {/* Map / Image */}
           <div className="order-2 lg:order-1">
-            {kostProfile.link_gmaps ? (
+            {cleanGmapsUrl ? (
               <div className="aspect-[4/3] w-full rounded-2xl md:rounded-[2.5rem] overflow-hidden premium-shadow-lg">
                 <iframe 
-                  src={kostProfile.link_gmaps} 
+                  src={cleanGmapsUrl} 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
@@ -380,8 +396,8 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-            {kostProfile.link_gmaps && (
-              <a href={kostProfile.link_gmaps} target="_blank" rel="noopener noreferrer">
+            {cleanGmapsUrl && (
+              <a href={cleanGmapsUrl} target="_blank" rel="noopener noreferrer">
                 <button className="px-5 py-3 md:px-8 md:py-4 bg-primary text-white text-sm md:text-base font-bold rounded-xl premium-shadow hover:bg-primary-dim transition-all active:scale-95 flex items-center gap-2">
                   <span className="material-symbols-outlined">map</span>
                   Buka di Google Maps
