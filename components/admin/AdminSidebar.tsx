@@ -14,7 +14,7 @@ const NAV_ITEMS = [
     { href: "/admin/pengaturan", label: "Pengaturan", icon: "settings" },
 ];
 
-export default function AdminSidebar({ userNama, namaKost = "SmartKos", logoUrl }: { userNama: string, namaKost?: string, logoUrl?: string | null }) {
+export default function AdminSidebar({ userNama, namaKost = "SmartKos", logoUrl, pendingVerifikasi = 0 }: { userNama: string, namaKost?: string, logoUrl?: string | null, pendingVerifikasi?: number }) {
     const pathname = usePathname();
     const initials = userNama.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() || "A";
 
@@ -42,17 +42,23 @@ export default function AdminSidebar({ userNama, namaKost = "SmartKos", logoUrl 
             <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 {NAV_ITEMS.map((item) => {
                     const isActive = pathname === item.href;
+                    const isVerifikasi = item.href === "/admin/verifikasi";
+                    const hasPending = isVerifikasi && pendingVerifikasi > 0;
+
                     return (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
+                            className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors relative ${isActive
                                 ? "bg-primary text-white shadow-md shadow-primary/30"
                                 : "text-gray-400 hover:bg-gray-800 hover:text-white"
                                 }`}
                         >
                             <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
                             {item.label}
+                            {hasPending ? (
+                                <span className="absolute right-4 w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse"></span>
+                            ) : null}
                         </Link>
                     );
                 })}

@@ -16,12 +16,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
     const kostProfile = await prisma.kostProfile.findFirst();
 
+    const pendingVerifikasi = await prisma.booking.count({
+        where: { status: "PENDING" }
+    });
+
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
             <AdminSidebar 
                 userNama={adminUser?.nama || "Admin System"} 
                 namaKost={kostProfile?.nama_kost || "SmartKos"}
                 logoUrl={kostProfile?.logo_url || null}
+                pendingVerifikasi={pendingVerifikasi}
             />
 
             {/* ========== MAIN CONTENT ========== */}
