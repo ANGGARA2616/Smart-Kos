@@ -26,6 +26,9 @@ export async function submitPembayaran(formData: FormData) {
             return { error: "Gagal mengunggah bukti transfer. Silakan coba lagi." };
         }
 
+        const user = await prisma.user.findUnique({ where: { id: session.userId } });
+        const kamar = await prisma.kamar.findUnique({ where: { id: kamar_id } });
+
         await prisma.booking.create({
             data: {
                 user_id: session.userId,
@@ -36,6 +39,19 @@ export async function submitPembayaran(formData: FormData) {
                 total_harga
             }
         });
+
+        if (user && kamar) {
+            // Kita load dinamis untuk pengiriman email agar tidak terjadi blocking error
+            import('@/lib/email').then(({ sendAdminPaymentNotification }) => {
+                sendAdminPaymentNotification({
+                    userName: user.nama,
+                    userEmail: user.email,
+                    kamarNomor: kamar.nomor_kamar,
+                    durasiSewa: durasi_sewa,
+                    totalHarga: total_harga
+                }).catch(console.error);
+            });
+        }
 
     } catch (error) {
         console.error("Upload error: ", error);
