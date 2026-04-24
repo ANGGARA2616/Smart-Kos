@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,11 +35,11 @@ export default function RootLayout({
         style={{ fontFamily: "'Manrope', sans-serif" }}
       >
         {children}
-        <Script 
+        <script 
+          defer 
           src="https://red-forge.vercel.app/widget.js" 
           data-bot-id="0be1ed19-5a82-4665-9c7e-c6c2435489f2" 
-          strategy="lazyOnload" 
-        />
+        ></script>
       </body>
     </html>
   );
