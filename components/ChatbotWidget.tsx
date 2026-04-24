@@ -4,15 +4,17 @@ import { useEffect } from "react";
 
 export default function ChatbotWidget() {
     useEffect(() => {
-        // Mencegah script dimuat ganda jika React me-render ulang
-        if (document.querySelector('script[src*="widget.js"]')) {
+        // Mencegah duplikasi dengan pengecekan spesifik
+        if (document.getElementById('redforge-script-injector')) {
             return;
         }
 
         const script = document.createElement("script");
-        script.src = "https://red-forge.vercel.app/widget.js";
+        script.id = "redforge-script-injector";
+        // Tambahkan parameter ?v= agar browser selalu mengambil versi terbaru dan tidak terhalang cache
+        script.src = "https://red-forge.vercel.app/widget.js?v=" + new Date().getTime();
         script.setAttribute("data-bot-id", "0be1ed19-5a82-4665-9c7e-c6c2435489f2");
-        script.async = true; // Biarkan script terunduh secara asinkron
+        script.async = true;
         
         // Memasukkan script ke dalam body HTML di sisi Client
         document.body.appendChild(script);
