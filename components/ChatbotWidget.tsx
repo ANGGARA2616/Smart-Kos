@@ -7,7 +7,7 @@ export default function ChatbotWidget() {
         // Mencegah widget ganda
         if (document.getElementById('redforge-widget-container')) return;
 
-        const botId = "0be1ed19-5a82-4665-9c7e-c6c2435489f2";
+        const botId = "4baee5b6-cb6d-4f82-938a-334eb40413b7";
         const baseUrl = "https://red-forge.vercel.app";
 
         const styles = `
