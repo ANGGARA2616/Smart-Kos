@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import ChatbotWidget from "@/components/ChatbotWidget";
+// import ChatbotWidget from "@/components/ChatbotWidget"; // disembunyikan sementara
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,7 +36,8 @@ export default function RootLayout({
         style={{ fontFamily: "'Manrope', sans-serif" }}
       >
         {children}
-        <ChatbotWidget />
+        {/* ChatbotWidget disembunyikan sementara atas permintaan. Hapus komentar untuk menampilkan lagi. */}
+        {/* <ChatbotWidget /> */}
       </body>
     </html>
   );
