@@ -2,6 +2,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import ProfileDropdown from "@/components/ProfileDropdown";
+import WelcomeGuideDialog from "@/components/dashboard/WelcomeGuideDialog";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const session = await getSession();
@@ -37,6 +38,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 </div>
             </nav>
             <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+                <WelcomeGuideDialog />
                 {children}
             </main>
         </div>

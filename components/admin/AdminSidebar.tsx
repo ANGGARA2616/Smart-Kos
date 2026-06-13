@@ -12,6 +12,7 @@ const NAV_ITEMS = [
     { href: "/admin/keluhan", label: "Keluhan Fasilitas", icon: "build" },
     { href: "/admin/laporan", label: "Laporan Keuangan", icon: "bar_chart" },
     { href: "/admin/pengaturan", label: "Pengaturan", icon: "settings" },
+    { href: "/USER_MANUAL_SMARTKOS.pdf", label: "Panduan Admin", icon: "help", external: true },
 ];
 
 export default function AdminSidebar({ userNama, namaKost = "SmartKos", logoUrl, pendingVerifikasi = 0 }: { userNama: string, namaKost?: string, logoUrl?: string | null, pendingVerifikasi?: number }) {
@@ -49,6 +50,8 @@ export default function AdminSidebar({ userNama, namaKost = "SmartKos", logoUrl,
                         <Link
                             key={item.href}
                             href={item.href}
+                            target={item.external ? "_blank" : undefined}
+                            rel={item.external ? "noopener noreferrer" : undefined}
                             className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors relative ${isActive
                                 ? "bg-primary text-white shadow-md shadow-primary/30"
                                 : "text-gray-400 hover:bg-gray-800 hover:text-white"

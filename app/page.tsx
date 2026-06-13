@@ -1,7 +1,4 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
-import { Card, CardBody } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
@@ -58,6 +55,33 @@ const TESTIMONIALS_DATA = [
     avatar: "JP",
     rating: 5,
     text: '"Sudah pindah-pindah kost 3 kali, dan ini yang paling terbaik. Kebersihan dapur bersama selalu terjaga, dan suasananya sangat homey tapi tetap eksklusif."',
+  },
+];
+
+const FAQ_DATA = [
+  {
+    question: "Bagaimana cara memesan kamar?",
+    answer: "Pilih kamar yang tersedia, buat akun atau masuk, lalu klik tombol sewa untuk mengirim pengajuan pemesanan.",
+  },
+  {
+    question: "Apa yang harus dilakukan setelah memilih kamar?",
+    answer: "Ikuti instruksi pembayaran di halaman pemesanan, unggah bukti transfer, lalu tunggu verifikasi admin.",
+  },
+  {
+    question: "Berapa lama proses verifikasi pembayaran?",
+    answer: "Admin akan memeriksa bukti pembayaran secara manual. Umumnya proses verifikasi dilakukan maksimal 1x24 jam.",
+  },
+  {
+    question: "Bagaimana saya tahu pemesanan diterima atau ditolak?",
+    answer: "Status pemesanan dapat dilihat di dashboard setelah login. Jika ditolak, Anda bisa melakukan pemesanan ulang sesuai instruksi yang tampil.",
+  },
+  {
+    question: "Apa saja yang bisa dilakukan di dashboard penghuni?",
+    answer: "Penghuni dapat melihat informasi kamar, mengecek masa sewa, mengajukan perpanjangan, dan melaporkan kerusakan fasilitas.",
+  },
+  {
+    question: "Bagaimana cara melaporkan kerusakan fasilitas?",
+    answer: "Masuk ke dashboard penghuni, pilih menu lapor kerusakan, isi detail kendala, lalu kirim laporan agar admin dapat menindaklanjuti.",
   },
 ];
 
@@ -192,16 +216,18 @@ export default async function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-3 pt-2 animate-fade-in-up-delay-2">
-              <Link href={session ? (session.role === "ADMIN" ? "/admin" : "/dashboard") : "/register"}>
-                <button className="px-5 py-3 md:px-8 md:py-4 bg-primary text-white text-sm md:text-base font-bold rounded-xl flex items-center gap-2 group hover:bg-primary-dim transition-all shadow-xl shadow-primary/30 active:scale-95">
-                  Cari Kamar Sekarang
-                  <span className="material-symbols-outlined text-[20px] md:text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                </button>
+              <Link
+                href={session ? (session.role === "ADMIN" ? "/admin" : "/dashboard") : "/register"}
+                className="px-5 py-3 md:px-8 md:py-4 bg-primary text-white text-sm md:text-base font-bold rounded-xl flex items-center gap-2 group hover:bg-primary-dim transition-all shadow-xl shadow-primary/30 active:scale-95"
+              >
+                Cari Kamar Sekarang
+                <span className="material-symbols-outlined text-[20px] md:text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
               </Link>
-              <a href="#kamar">
-                <button className="px-5 py-3 md:px-8 md:py-4 border border-white/30 text-white text-sm md:text-base font-bold rounded-xl hover:bg-white/10 backdrop-blur-sm transition-all active:scale-95">
-                  Lihat Kamar
-                </button>
+              <a
+                href="#kamar"
+                className="px-5 py-3 md:px-8 md:py-4 border border-white/30 text-white text-sm md:text-base font-bold rounded-xl hover:bg-white/10 backdrop-blur-sm transition-all active:scale-95 inline-flex items-center"
+              >
+                Lihat Kamar
               </a>
             </div>
           </div>
@@ -316,10 +342,11 @@ export default async function Home() {
                     ))}
                   </div>
 
-                  <Link href={session ? "/dashboard" : "/register"} className="block">
-                    <button className="w-full py-3 md:py-4 text-sm md:text-base bg-surface-container-high text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all duration-300 active:scale-95">
-                      Pesan Sekarang
-                    </button>
+                  <Link
+                    href={session ? "/dashboard" : "/register"}
+                    className="block w-full py-3 md:py-4 text-center text-sm md:text-base bg-surface-container-high text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all duration-300 active:scale-95"
+                  >
+                    Pesan Sekarang
                   </Link>
                 </div>
               </div>
@@ -414,11 +441,14 @@ export default async function Home() {
               </div>
             </div>
             {externalGmapsUrl && (
-              <a href={externalGmapsUrl} target="_blank" rel="noopener noreferrer">
-                <button className="px-5 py-3 md:px-8 md:py-4 bg-primary text-white text-sm md:text-base font-bold rounded-xl premium-shadow hover:bg-primary-dim transition-all active:scale-95 flex items-center gap-2">
-                  <span className="material-symbols-outlined">map</span>
-                  Buka di Google Maps
-                </button>
+              <a
+                href={externalGmapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 md:px-8 md:py-4 bg-primary text-white text-sm md:text-base font-bold rounded-xl premium-shadow hover:bg-primary-dim transition-all active:scale-95 inline-flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined">map</span>
+                Buka di Google Maps
               </a>
             )}
           </div>
@@ -471,6 +501,40 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ========== FAQ ========== */}
+      <section id="faq" className="py-14 md:py-24 bg-surface-container-low">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 md:mb-14">
+            <span className="text-primary font-bold text-xs md:text-sm uppercase tracking-[0.2em]">Panduan Calon Penghuni</span>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-on-surface mt-3 mb-3">
+              Pertanyaan yang Sering Ditanyakan
+            </h2>
+            <p className="text-on-surface-variant text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+              Ikuti panduan singkat ini untuk memahami alur pemesanan, pembayaran, dan penggunaan dashboard SmartKos.
+            </p>
+          </div>
+
+          <div className="space-y-3 md:space-y-4">
+            {FAQ_DATA.map((item) => (
+              <details
+                key={item.question}
+                className="group rounded-2xl border border-white/70 bg-white premium-shadow overflow-hidden"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 md:px-6 md:py-5 text-left">
+                  <span className="text-sm md:text-base font-bold text-on-surface">{item.question}</span>
+                  <span className="material-symbols-outlined text-primary text-[22px] transition-transform group-open:rotate-180">
+                    expand_more
+                  </span>
+                </summary>
+                <div className="px-5 pb-5 md:px-6 md:pb-6 text-sm md:text-base text-on-surface-variant leading-relaxed border-t border-gray-100">
+                  <p className="pt-4">{item.answer}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ========== CTA BAND ========== */}
       <section className="py-12 md:py-20 animated-gradient relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMwLTkuOTQtOC4wNi0xOC0xOC0xOHYyYzguODM3IDAgMTYgNy4xNjMgMTYgMTZzLTcuMTYzIDE2LTE2IDE2djJjOS45NCAwIDE4LTguMDYgMTgtMTh6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9nPjwvc3ZnPg==')] opacity-30" />
@@ -482,10 +546,11 @@ export default async function Home() {
           <p className="text-white/80 text-sm md:text-lg mb-6 md:mb-10 max-w-2xl mx-auto leading-relaxed">
             Bergabung dengan ratusan penghuni yang sudah menikmati kenyamanan premium bersama kami.
           </p>
-          <Link href={session ? (session.role === "ADMIN" ? "/admin" : "/dashboard") : "/register"}>
-            <button className="px-6 py-3 md:px-10 md:py-4 bg-white text-primary font-bold rounded-xl shadow-xl hover:shadow-2xl hover:bg-gray-50 transition-all active:scale-95 text-sm md:text-lg">
-              Daftar Sekarang — Gratis!
-            </button>
+          <Link
+            href={session ? (session.role === "ADMIN" ? "/admin" : "/dashboard") : "/register"}
+            className="px-6 py-3 md:px-10 md:py-4 bg-white text-primary font-bold rounded-xl shadow-xl hover:shadow-2xl hover:bg-gray-50 transition-all active:scale-95 text-sm md:text-lg inline-flex items-center justify-center"
+          >
+            Daftar Sekarang — Gratis!
           </Link>
         </div>
       </section>
