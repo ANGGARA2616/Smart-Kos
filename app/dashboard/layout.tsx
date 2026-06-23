@@ -19,19 +19,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
     });
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-            <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div className="theme-ngekos min-h-screen bg-[#F4F6FA] flex flex-col">
+            <nav className="bg-white border-b border-[#EAEDF3] sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                             {profile?.logo_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
                                 <img src={profile.logo_url} alt={`${nama_kost} logo`} className="h-8 w-auto min-w-[32px] max-w-[150px] object-contain rounded-md" />
                             ) : (
-                                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-base flex-shrink-0">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-bold text-white" style={{ background: "linear-gradient(135deg,#2F6BFF,#7AA6FF)" }}>
                                     {nama_kost.charAt(0)}
                                 </div>
                             )}
-                            <span className="font-bold text-xl text-gray-900 truncate max-w-[180px] sm:max-w-xs">{nama_kost}</span>
+                            <span className="font-bold text-xl text-[#0E1424] truncate max-w-[180px] sm:max-w-xs">{nama_kost}</span>
                         </div>
                         <ProfileDropdown userName={user?.nama || "Penghuni"} />
                     </div>

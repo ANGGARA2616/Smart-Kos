@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 
 export default function CopyButton({ textToCopy, label = "Salin Rekening" }: { textToCopy: string, label?: string }) {
     const [copied, setCopied] = useState(false);

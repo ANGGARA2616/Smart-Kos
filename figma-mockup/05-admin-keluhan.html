@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Keluhan — Smart-Kos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .keluhan-layout { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+  .keluhan-list { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; max-height: calc(100vh - 220px); display: flex; flex-direction: column; }
+  .list-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .list-tabs { display: flex; gap: 16px; padding: 0 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .list-tab { padding: 12px 0; color: var(--text-soft); border-bottom: 2px solid transparent; }
+  .list-tab.active { color: var(--text); border-color: var(--primary); font-weight: 600; }
+  .keluhan-item { padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .keluhan-item:hover { background: var(--bg-subtle); }
+  .keluhan-item.selected { background: var(--blue-50); border-left: 3px solid var(--accent); padding-left: 13px; }
+  .keluhan-item .meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-soft); margin-bottom: 6px; }
+  .keluhan-item .title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .keluhan-item .snip { font-size: 13px; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .keluhan-item .tags { display: flex; gap: 6px; margin-top: 8px; }
+  .keluhan-detail { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px; }
+  .photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .photo-thumb { aspect-ratio: 4/3; border-radius: 10px; background: linear-gradient(135deg, var(--navy-200), var(--navy-300)); position: relative; overflow: hidden; }
+  .photo-thumb::after { content:""; position:absolute; inset:0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 60%);}
+  .timeline-item { display: flex; gap: 12px; padding: 12px 0; }
+  .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin-top: 6px; flex-shrink: 0; position: relative; }
+  .timeline-dot::before { content:""; position:absolute; top:14px; left:4px; width:2px; height:32px; background: var(--border); }
+  .timeline-item:last-child .timeline-dot::before { display: none; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="logo-mark">SK</span>Smart-Kos</div>
+    <div class="nav-section">Manajemen</div>
+    <a class="nav-item" href="02-admin-dashboard.html">⌂ Dashboard</a>
+    <a class="nav-item" href="03-admin-kamar.html">▦ Kamar</a>
+    <a class="nav-item" href="04-admin-penghuni.html">⚇ Penghuni</a>
+    <a class="nav-item" href="#">✓ Verifikasi <span class="badge badge-warning" style="margin-left:auto">3</span></a>
+    <div class="nav-section">Operasional</div>
+    <a class="nav-item active" href="05-admin-keluhan.html">⚠ Keluhan <span class="badge badge-danger" style="margin-left:auto">2</span></a>
+    <a class="nav-item" href="#">▤ Laporan</a>
+    <a class="nav-item" href="#">⚙ Pengaturan</a>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-header">
+      <h4 style="margin:0">Keluhan & Perbaikan</h4>
+      <div class="row gap-3">
+        <button class="btn btn-outline btn-sm">Filter</button>
+        <button class="btn btn-primary btn-sm">+ Catat Manual</button>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-head">
+        <div>
+          <h2 style="font-size:28px">Keluhan Masuk</h2>
+          <p class="muted" style="font-size:14px;margin-top:6px">3 keluhan aktif · rata-rata respons 2 jam</p>
+        </div>
+      </div>
+
+      <div class="keluhan-layout">
+        <!-- LIST -->
+        <div class="keluhan-list">
+          <div class="list-header">
+            <input class="input" placeholder="Cari keluhan…" style="width: 100%; border: 0; padding: 4px 0; font-size: 14px;"/>
+          </div>
+          <div class="list-tabs">
+            <span class="list-tab active">Baru (2)</span>
+            <span class="list-tab">Diproses (1)</span>
+            <span class="list-tab">Selesai</span>
+            <span class="list-tab">Semua</span>
+          </div>
+
+          <div class="keluhan-item selected">
+            <div class="meta"><span>A-12 · Rina Sari</span><span>15 menit lalu</span></div>
+            <div class="title">AC bocor, lantai basah</div>
+            <div class="snip">AC unit di kamar saya bocor sejak semalam. Air menetes ke kasur, kasur sudah basah sebagian.</div>
+            <div class="tags">
+              <span class="badge badge-danger">Urgent</span>
+              <span class="badge">AC</span>
+              <span class="badge">3 foto</span>
+            </div>
+          </div>
+
+          <div class="keluhan-item">
+            <div class="meta"><span>B-04 · Doni Hidayat</span><span>2 jam lalu</span></div>
+            <div class="title">Kran wastafel macet</div>
+            <div class="snip">Kran wastafel kamar mandi sulit dibuka. Kayak ada karat di dalamnya.</div>
+            <div class="tags">
+              <span class="badge badge-warning">Sedang</span>
+              <span class="badge">Plumbing</span>
+            </div>
+          </div>
+
+          <div class="keluhan-item">
+            <div class="meta"><span>A-15 · Andi Wijaya</span><span>kemarin</span></div>
+            <div class="title">Lampu kamar mati</div>
+            <div class="snip">Lampu utama kamar mati. Sudah saya coba ganti lampu sendiri tapi masih tidak nyala.</div>
+            <div class="tags">
+              <span class="badge badge-info">Diproses</span>
+              <span class="badge">Listrik</span>
+            </div>
+          </div>
+
+          <div class="keluhan-item">
+            <div class="meta"><span>A-08 · Lilis Pertiwi</span><span>3 hari lalu</span></div>
+            <div class="title">Pintu lemari rusak</div>
+            <div class="snip">Engsel pintu lemari kamar lepas, pintu tidak bisa ditutup rapat.</div>
+            <div class="tags">
+              <span class="badge badge-success">Selesai</span>
+              <span class="badge">Furniture</span>
+            </div>
+          </div>
+
+          <div class="keluhan-item">
+            <div class="meta"><span>B-10 · Fajar Ramadhan</span><span>1 minggu lalu</span></div>
+            <div class="title">WiFi lemot di kamar</div>
+            <div class="snip">Sinyal WiFi di kamar saya lemot sekali, terutama di sore-malam hari.</div>
+            <div class="tags">
+              <span class="badge badge-success">Selesai</span>
+              <span class="badge">Internet</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="keluhan-detail">
+          <div class="row between">
+            <div>
+              <div class="row gap-2" style="margin-bottom: 8px">
+                <span class="badge badge-danger">Urgent</span>
+                <span class="badge">AC</span>
+                <span class="badge">#KEL-0234</span>
+              </div>
+              <h3 style="margin:0">AC bocor, lantai basah</h3>
+              <p class="muted" style="font-size:13px; margin-top:6px">Dilaporkan 15 menit lalu · Kamar A-12 · Lantai 1</p>
+            </div>
+            <div class="row gap-2">
+              <button class="btn btn-outline btn-sm">⌕ WA Penghuni</button>
+              <button class="btn btn-primary btn-sm">Tugaskan Teknisi</button>
+            </div>
+          </div>
+
+          <div class="divider" style="margin: 24px 0"></div>
+
+          <!-- Reporter -->
+          <div class="row gap-3" style="margin-bottom: 24px">
+            <div class="avatar avatar-lg">RS</div>
+            <div style="flex:1">
+              <div style="font-weight: 600">Rina Sari</div>
+              <div style="font-size: 13px; color: var(--text-soft)">+62 812-3456-7890 · penghuni 5 bulan</div>
+            </div>
+            <a class="btn btn-ghost btn-sm" href="#">Lihat Profil →</a>
+          </div>
+
+          <!-- Description -->
+          <h5 style="margin-bottom: 8px">Deskripsi keluhan</h5>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 24px">
+            AC unit di kamar saya bocor sejak semalam. Air menetes ke kasur, kasur sudah basah sebagian. Sudah saya alas dengan ember tapi air tetap keluar terus. Tolong bantu cek dan perbaiki sesegera mungkin, saya tidak bisa tidur di kasur basah.
+          </p>
+
+          <h5 style="margin-bottom: 12px">Foto bukti (3)</h5>
+          <div class="photo-grid" style="margin-bottom: 28px">
+            <div class="photo-thumb"></div>
+            <div class="photo-thumb"></div>
+            <div class="photo-thumb"></div>
+          </div>
+
+          <h5 style="margin-bottom: 12px">Riwayat</h5>
+          <div>
+            <div class="timeline-item">
+              <span class="timeline-dot"></span>
+              <div>
+                <div style="font-size: 14px"><b>Keluhan dibuat</b> oleh Rina Sari</div>
+                <div style="font-size: 12px; color: var(--text-soft)">15 menit lalu via aplikasi</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-dot" style="background: var(--warning-600)"></span>
+              <div>
+                <div style="font-size: 14px"><b>Diberi prioritas Urgent</b> oleh sistem</div>
+                <div style="font-size: 12px; color: var(--text-soft)">14 menit lalu · kata kunci "bocor", foto terdeteksi</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider" style="margin: 24px 0"></div>
+
+          <!-- Action -->
+          <h5 style="margin-bottom: 12px">Tindakan</h5>
+          <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="field"><label class="label">Tugaskan ke</label>
+              <select class="select"><option>Pak Yono (Teknisi AC)</option><option>Bu Sumi (General)</option></select>
+            </div>
+            <div class="field"><label class="label">Estimasi selesai</label>
+              <input class="input" value="Hari ini, 18:00"/>
+            </div>
+          </div>
+          <div class="field" style="margin-top: 12px">
+            <label class="label">Catatan untuk teknisi</label>
+            <textarea class="textarea" placeholder="Tambah instruksi..."></textarea>
+          </div>
+          <div class="row gap-2" style="margin-top: 16px">
+            <button class="btn btn-primary">Kirim Tugas</button>
+            <button class="btn btn-outline">Tandai Selesai</button>
+            <button class="btn btn-ghost" style="margin-left: auto; color: var(--danger-600)">Tutup tanpa aksi</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { useState, useTransition } from "react";
 import { submitPembayaran } from "./actions";
 
@@ -42,7 +42,7 @@ export default function CheckoutForm({ kamarId, hargaPerBulan }: { kamarId: stri
                             onClick={() => setDurasiSewa(durasi)}
                             className={`cursor-pointer border rounded-xl py-3 px-3 text-center transition-all ease-out ${durasiSewa === durasi
                                     ? 'border-primary bg-primary/10 text-primary font-bold shadow-sm ring-1 ring-primary/30 scale-100'
-                                    : 'border-gray-200/80 bg-white text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900 scale-95'
+                                    : 'border-[#EAEDF3]/80 bg-white text-gray-500 hover:bg-[#F9FAFC] hover:border-[#C9D0DC] hover:text-gray-900 scale-95'
                                 }`}
                         >
                             <span className="block text-lg mb-0.5">{durasi}</span>
@@ -61,20 +61,20 @@ export default function CheckoutForm({ kamarId, hargaPerBulan }: { kamarId: stri
                 <p className="text-[11px] text-gray-400 mt-2.5 font-medium leading-relaxed">Penting: Nominal pen-transferan ke PT SmartKos Indonesia wajib persis tanpa pembulatan.</p>
             </div>
 
-            <div className="space-y-3 pt-4 border-t border-dashed border-gray-200">
+            <div className="space-y-3 pt-4 border-t border-dashed border-[#EAEDF3]">
                 <label className="block text-sm font-semibold text-gray-800">3. Unggah Bukti (JPG/PNG)</label>
                 <input
                     type="file"
                     name="bukti_transfer"
                     accept="image/*"
                     required
-                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 cursor-pointer border border-gray-200 rounded-lg p-1.5 bg-white shadow-sm outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 cursor-pointer border border-[#EAEDF3] rounded-lg p-1.5 bg-white shadow-sm outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                 />
                 <p className="text-[11px] text-gray-400 font-medium pl-1">Ukuran maskimal 5 MB dengan tanggal transfer yang jelas.</p>
             </div>
 
             <Button type="submit" variant="primary" className="w-full font-bold pt-3 pb-3 mt-6 text-[15px] shadow-lg shadow-primary/25" disabled={isPending}>
-                {isPending ? "Memproses Transaksi..." : "Kirim Bukti Pembayaran →"}
+                {isPending ? "Memproses Transaksi..." : "Kirim Bukti Pembayaran"}
             </Button>
         </form>
     );

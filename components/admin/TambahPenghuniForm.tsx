@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { useState, useTransition } from "react";
 import { tambahPenghuniManual } from "@/app/admin/penghuni/actions";
 
@@ -69,26 +69,26 @@ export default function TambahPenghuniForm({ kamarKosong }: { kamarKosong: Kamar
                     <div className="space-y-1.5">
                         <label className="block text-sm font-semibold text-gray-700">Nama Lengkap <span className="text-red-500">*</span></label>
                         <input type="text" name="nama" required placeholder="Masukkan nama lengkap"
-                            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" />
+                            className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-[#C9D6FF] transition-colors" />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                             <label className="block text-sm font-semibold text-gray-700">Email <span className="text-red-500">*</span></label>
                             <input type="email" name="email" required placeholder="email@contoh.com"
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" />
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-[#C9D6FF] transition-colors" />
                         </div>
                         <div className="space-y-1.5">
                             <label className="block text-sm font-semibold text-gray-700">No. HP <span className="text-red-500">*</span></label>
                             <input type="text" name="no_hp" required placeholder="08xxxxxxxxxx"
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" />
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-[#C9D6FF] transition-colors" />
                         </div>
                     </div>
 
                     <div className="space-y-1.5">
                         <label className="block text-sm font-semibold text-gray-700">Pilih Kamar <span className="text-red-500">*</span></label>
                         {kamarKosong.length === 0 ? (
-                            <div className="p-3 bg-amber-50 text-amber-700 text-sm font-semibold rounded-lg border border-amber-200">
+                            <div className="p-3 bg-[#FFF4E0] text-[#B7791F] text-sm font-semibold rounded-lg border border-[#F5E2BD]">
                                 Tidak ada kamar kosong yang tersedia saat ini.
                             </div>
                         ) : (
@@ -100,7 +100,7 @@ export default function TambahPenghuniForm({ kamarKosong }: { kamarKosong: Kamar
                                     const k = kamarKosong.find(k => k.id === e.target.value);
                                     setSelectedKamar(k || null);
                                 }}
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors bg-white"
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-[#C9D6FF] transition-colors bg-white"
                             >
                                 <option value="" disabled>-- Pilih Kamar --</option>
                                 {kamarKosong.map(k => (

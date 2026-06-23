@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Lapor Kerusakan — Smart-Kos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .lapor-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+  .panel { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .cat-tile {
+    padding: 16px 12px; border-radius: var(--r-md); border: 1px solid var(--border);
+    background: var(--bg); text-align: center; cursor: pointer; font-size: 13px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .cat-tile:hover { border-color: var(--accent); }
+  .cat-tile.active { background: var(--blue-50); border-color: var(--accent); color: var(--blue-700); font-weight: 600; }
+  .cat-icon { font-size: 22px; }
+  .priority-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pri-tile { padding: 14px; border-radius: var(--r-md); border: 1px solid var(--border); text-align: center; cursor: pointer; font-size: 13px; font-weight: 500; }
+  .pri-tile.active.low { border-color: var(--success-600); background: var(--success-100); color: var(--success-600); }
+  .pri-tile.active.med { border-color: var(--warning-600); background: var(--warning-100); color: var(--warning-600); }
+  .pri-tile.active.high { border-color: var(--danger-600); background: var(--danger-100); color: var(--danger-600); }
+  .upload-box {
+    border: 2px dashed var(--border-strong); border-radius: var(--r-md);
+    padding: 32px; text-align: center; color: var(--text-soft); font-size: 14px;
+  }
+  .uploaded-photos { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .upload-thumb {
+    width: 80px; height: 80px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--navy-200), var(--navy-300));
+    position: relative;
+  }
+  .upload-thumb .x { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 1px solid var(--border); font-size: 11px; display: grid; place-items: center; cursor: pointer; }
+  .history-item { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .history-item:last-child { border-bottom: 0; }
+  .history-row { display: flex; justify-content: space-between; align-items: start; }
+  .history-title { font-weight: 600; font-size: 14px; }
+  .history-meta { font-size: 12px; color: var(--text-soft); margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="logo-mark">SK</span>Smart-Kos</div>
+    <div class="nav-section">Akun Saya</div>
+    <a class="nav-item" href="06-penghuni-dashboard.html">⌂ Dashboard</a>
+    <a class="nav-item active" href="07-penghuni-lapor.html">⚠ Lapor Kerusakan</a>
+    <a class="nav-item" href="08-penghuni-perpanjang.html">↻ Perpanjang Sewa</a>
+    <a class="nav-item" href="#">✉ Pesan <span class="badge badge-info" style="margin-left:auto">2</span></a>
+    <a class="nav-item" href="09-penghuni-profil.html">⚇ Profil Saya</a>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-header">
+      <h4 style="margin:0">Lapor Kerusakan</h4>
+    </header>
+
+    <main class="app-content">
+      <div class="page-head">
+        <div>
+          <h2 style="font-size:28px">Buat Laporan Baru</h2>
+          <p class="muted" style="font-size:14px;margin-top:6px">Laporan langsung masuk ke pemilik kos. Rata-rata respons 2 jam.</p>
+        </div>
+      </div>
+
+      <div class="lapor-grid">
+        <!-- FORM -->
+        <div class="panel">
+          <!-- Kategori -->
+          <div style="margin-bottom: 28px">
+            <label class="label">Kategori kerusakan</label>
+            <p class="help" style="margin-bottom: 12px">Pilih satu kategori yang paling sesuai</p>
+            <div class="cat-grid">
+              <div class="cat-tile active"><div class="cat-icon">❄</div>AC / Pendingin</div>
+              <div class="cat-tile"><div class="cat-icon">💡</div>Listrik / Lampu</div>
+              <div class="cat-tile"><div class="cat-icon">🚿</div>Air / Pipa</div>
+              <div class="cat-tile"><div class="cat-icon">🚪</div>Pintu / Kunci</div>
+              <div class="cat-tile"><div class="cat-icon">🛏</div>Furniture</div>
+              <div class="cat-tile"><div class="cat-icon">📶</div>WiFi / TV</div>
+              <div class="cat-tile"><div class="cat-icon">🧹</div>Kebersihan</div>
+              <div class="cat-tile"><div class="cat-icon">⋯</div>Lainnya</div>
+            </div>
+          </div>
+
+          <!-- Judul -->
+          <div class="field" style="margin-bottom: 20px">
+            <label class="label">Judul singkat</label>
+            <input class="input" placeholder="Contoh: AC bocor, lantai basah" value="AC bocor, lantai basah"/>
+            <span class="help">Beri judul yang jelas — bantu admin pahami masalah lebih cepat</span>
+          </div>
+
+          <!-- Deskripsi -->
+          <div class="field" style="margin-bottom: 20px">
+            <label class="label">Deskripsi detail</label>
+            <textarea class="textarea" style="min-height: 140px" placeholder="Ceritakan apa yang terjadi, sejak kapan, dan dampaknya...">AC unit di kamar saya bocor sejak semalam. Air menetes ke kasur, kasur sudah basah sebagian. Sudah saya alas dengan ember tapi air tetap keluar terus.</textarea>
+            <span class="help">128 / 500 karakter</span>
+          </div>
+
+          <!-- Foto -->
+          <div class="field" style="margin-bottom: 20px">
+            <label class="label">Foto bukti</label>
+            <p class="help">Maksimal 5 foto, ukuran 5MB per file</p>
+            <div class="upload-box">
+              <div style="font-size: 24px; margin-bottom: 8px">📷</div>
+              <div>Klik atau drag foto ke sini</div>
+              <div style="font-size: 12px; margin-top: 4px">JPG, PNG, atau HEIC</div>
+            </div>
+            <div class="uploaded-photos">
+              <div class="upload-thumb"><span class="x">×</span></div>
+              <div class="upload-thumb"><span class="x">×</span></div>
+              <div class="upload-thumb"><span class="x">×</span></div>
+            </div>
+          </div>
+
+          <!-- Prioritas -->
+          <div style="margin-bottom: 28px">
+            <label class="label">Tingkat urgensi</label>
+            <p class="help" style="margin-bottom: 12px">Pilih yang paling sesuai kondisi</p>
+            <div class="priority-grid">
+              <div class="pri-tile">🟢 Rendah · bisa nanti</div>
+              <div class="pri-tile">🟡 Sedang · minggu ini</div>
+              <div class="pri-tile active high">🔴 Tinggi · segera</div>
+            </div>
+          </div>
+
+          <div class="divider" style="margin-bottom: 24px"></div>
+
+          <div class="row gap-2">
+            <button class="btn btn-primary btn-lg">Kirim Laporan</button>
+            <button class="btn btn-outline btn-lg">Simpan Draft</button>
+            <button class="btn btn-ghost btn-lg" style="margin-left:auto">Batal</button>
+          </div>
+        </div>
+
+        <!-- HISTORY -->
+        <div>
+          <div class="panel">
+            <div class="row between" style="margin-bottom: 8px">
+              <h4 style="margin:0">Laporan Saya</h4>
+              <span class="badge">4</span>
+            </div>
+            <p class="muted" style="font-size: 13px; margin-bottom: 8px">Status laporan kamu</p>
+
+            <div class="history-item">
+              <div class="history-row">
+                <div>
+                  <div class="history-title">Lampu kamar mati</div>
+                  <div class="history-meta">3 hari lalu · Listrik</div>
+                </div>
+                <span class="badge badge-info">Diproses</span>
+              </div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px">⏱ Estimasi selesai besok sore</p>
+            </div>
+
+            <div class="history-item">
+              <div class="history-row">
+                <div>
+                  <div class="history-title">Pintu lemari rusak</div>
+                  <div class="history-meta">2 minggu lalu · Furniture</div>
+                </div>
+                <span class="badge badge-success">Selesai</span>
+              </div>
+            </div>
+
+            <div class="history-item">
+              <div class="history-row">
+                <div>
+                  <div class="history-title">WiFi sering disconnect</div>
+                  <div class="history-meta">1 bulan lalu · Internet</div>
+                </div>
+                <span class="badge badge-success">Selesai</span>
+              </div>
+            </div>
+
+            <div class="history-item">
+              <div class="history-row">
+                <div>
+                  <div class="history-title">Stop kontak longgar</div>
+                  <div class="history-meta">2 bulan lalu · Listrik</div>
+                </div>
+                <span class="badge badge-success">Selesai</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top: 16px">
+            <h5 style="margin-bottom: 8px">💡 Tips lapor cepat ditangani</h5>
+            <ul style="font-size: 13px; color: var(--text-muted); line-height: 1.7; padding-left: 18px">
+              <li>Foto jelas, jangan blur</li>
+              <li>Tulis sejak kapan masalah terjadi</li>
+              <li>Sebutkan dampaknya ke aktivitas</li>
+              <li>Set urgensi sesuai kondisi sebenarnya</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

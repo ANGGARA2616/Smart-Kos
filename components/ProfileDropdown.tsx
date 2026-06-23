@@ -30,16 +30,19 @@ export default function ProfileDropdown({ userName }: { userName: string }) {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-2.5 rounded-full border border-[#EAEDF3] bg-white py-1 pl-1 pr-3 shadow-sm hover:bg-[#F8FAFD] transition-colors"
             >
-                <div className="w-8 h-8 rounded-full bg-primary/15 text-primary font-bold text-xs flex items-center justify-center flex-shrink-0">
+                <div
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white"
+                    style={{ background: "linear-gradient(135deg,#2F6BFF,#7AA6FF)" }}
+                >
                     {initials}
                 </div>
-                <span className="text-sm font-semibold text-gray-700 hidden sm:block max-w-[120px] truncate">
+                <span className="text-sm font-semibold text-[#0E1424] hidden sm:block max-w-[120px] truncate">
                     {userName}
                 </span>
                 <svg
-                    className={`w-4 h-4 text-gray-400 transition-transform hidden sm:block ${open ? "rotate-180" : ""}`}
+                    className={`w-4 h-4 text-[#8A93A4] transition-transform hidden sm:block ${open ? "rotate-180" : ""}`}
                     fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
                 >
                     <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />

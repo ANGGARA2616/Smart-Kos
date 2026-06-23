@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Perpanjang Sewa — Smart-Kos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .step-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; font-size: 13px; }
+  .step-circle { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 12px; }
+  .step-circle.done { background: var(--success-600); color: white; }
+  .step-circle.active { background: var(--primary); color: white; }
+  .step-circle.todo { background: var(--bg-muted); color: var(--text-soft); }
+  .step-line { flex: 1; height: 2px; background: var(--border); }
+  .step-line.done { background: var(--success-600); }
+  .step-label { font-weight: 500; }
+  .step-label.todo { color: var(--text-soft); }
+
+  .perpanjang-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+  .panel { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px; }
+
+  .duration-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .dur-card {
+    padding: 20px; border-radius: var(--r-lg); border: 1px solid var(--border);
+    text-align: center; cursor: pointer; position: relative;
+  }
+  .dur-card:hover { border-color: var(--accent); }
+  .dur-card.active { border-color: var(--primary); border-width: 2px; padding: 19px; background: var(--blue-50); }
+  .dur-card.active::after { content:"✓"; position:absolute; top:8px; right:8px; width:20px;height:20px;border-radius:50%;background:var(--primary);color:white; display:grid;place-items:center;font-size:11px;}
+  .dur-card .month { font-size: 32px; font-weight: 700; letter-spacing: -0.025em; }
+  .dur-card .unit { font-size: 12px; color: var(--text-soft); }
+  .dur-card .price { font-size: 14px; font-weight: 600; margin-top: 6px; }
+  .dur-card .save { font-size: 11px; color: var(--success-600); font-weight: 500; margin-top: 4px; }
+  .dur-card .popular { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; font-size: 11px; padding: 3px 10px; border-radius: var(--r-full); font-weight: 600; }
+
+  .pay-method { padding: 14px 16px; border-radius: var(--r-md); border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; margin-bottom: 8px; }
+  .pay-method.active { border-color: var(--primary); background: var(--blue-50); }
+  .pay-method input { margin-right: 4px; }
+
+  .summary-row { display: flex; justify-content: space-between; padding: 10px 0; font-size: 14px; }
+  .summary-row.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px; font-size: 16px; font-weight: 600; }
+  .summary-row .label { color: var(--text-muted); }
+  .summary-row .val { color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="logo-mark">SK</span>Smart-Kos</div>
+    <div class="nav-section">Akun Saya</div>
+    <a class="nav-item" href="06-penghuni-dashboard.html">⌂ Dashboard</a>
+    <a class="nav-item" href="07-penghuni-lapor.html">⚠ Lapor Kerusakan</a>
+    <a class="nav-item active" href="08-penghuni-perpanjang.html">↻ Perpanjang Sewa</a>
+    <a class="nav-item" href="#">✉ Pesan <span class="badge badge-info" style="margin-left:auto">2</span></a>
+    <a class="nav-item" href="09-penghuni-profil.html">⚇ Profil Saya</a>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-header">
+      <h4 style="margin:0">Perpanjang Sewa</h4>
+    </header>
+
+    <main class="app-content">
+      <div class="page-head">
+        <div>
+          <h2 style="font-size:28px">Perpanjang Sewa Kamar A-12</h2>
+          <p class="muted" style="font-size:14px;margin-top:6px">Sewa Anda berakhir 30 Juni 2026. Yuk lanjutkan biar tidak perlu pindah.</p>
+        </div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="step-bar">
+        <div class="row gap-2"><div class="step-circle done">✓</div><span class="step-label">Pilih Durasi</span></div>
+        <div class="step-line done"></div>
+        <div class="row gap-2"><div class="step-circle active">2</div><span class="step-label">Konfirmasi & Bayar</span></div>
+        <div class="step-line"></div>
+        <div class="row gap-2"><div class="step-circle todo">3</div><span class="step-label todo">Selesai</span></div>
+      </div>
+
+      <div class="perpanjang-grid">
+        <!-- LEFT: FORM -->
+        <div>
+          <div class="panel">
+            <h4 style="margin-bottom: 4px">Pilih Durasi Perpanjangan</h4>
+            <p class="muted" style="font-size: 13px; margin-bottom: 20px">Sewa lebih lama, hemat lebih banyak</p>
+
+            <div class="duration-grid">
+              <div class="dur-card">
+                <div class="month">1</div>
+                <div class="unit">bulan</div>
+                <div class="price">Rp 1.500.000</div>
+              </div>
+              <div class="dur-card">
+                <div class="month">3</div>
+                <div class="unit">bulan</div>
+                <div class="price">Rp 4.450.000</div>
+                <div class="save">Hemat Rp 50.000</div>
+              </div>
+              <div class="dur-card active">
+                <span class="popular">Paling Populer</span>
+                <div class="month">6</div>
+                <div class="unit">bulan</div>
+                <div class="price">Rp 8.700.000</div>
+                <div class="save">Hemat Rp 300.000</div>
+              </div>
+              <div class="dur-card">
+                <div class="month">12</div>
+                <div class="unit">bulan</div>
+                <div class="price">Rp 16.800.000</div>
+                <div class="save">Hemat Rp 1.200.000</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top: 20px">
+            <h4 style="margin-bottom: 16px">Metode Pembayaran</h4>
+
+            <div class="pay-method active">
+              <input type="radio" name="pay" checked/>
+              <div style="font-size: 22px">📱</div>
+              <div style="flex:1">
+                <div style="font-weight: 600">QRIS</div>
+                <div style="font-size: 12px; color: var(--text-soft)">Bayar dari semua aplikasi e-wallet & m-banking</div>
+              </div>
+              <span class="badge badge-success">Otomatis terverifikasi</span>
+            </div>
+
+            <div class="pay-method">
+              <input type="radio" name="pay"/>
+              <div style="font-size: 22px">🏦</div>
+              <div style="flex:1">
+                <div style="font-weight: 600">Transfer Bank</div>
+                <div style="font-size: 12px; color: var(--text-soft)">BCA, Mandiri, BNI, BRI</div>
+              </div>
+            </div>
+
+            <div class="pay-method">
+              <input type="radio" name="pay"/>
+              <div style="font-size: 22px">💰</div>
+              <div style="flex:1">
+                <div style="font-weight: 600">Cicilan 3× / 6×</div>
+                <div style="font-size: 12px; color: var(--text-soft)">Hanya untuk durasi 6 bulan ke atas</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top: 20px">
+            <h4 style="margin-bottom: 12px">Catatan untuk Pemilik</h4>
+            <textarea class="textarea" placeholder="Misal: minta dipasang rak buku tambahan, atau request khusus lainnya..."></textarea>
+          </div>
+        </div>
+
+        <!-- RIGHT: SUMMARY -->
+        <div>
+          <div class="panel" style="position: sticky; top: 80px">
+            <h4 style="margin-bottom: 16px">Ringkasan</h4>
+
+            <div style="padding: 16px; background: var(--bg-subtle); border-radius: var(--r-md); margin-bottom: 16px">
+              <div style="font-size: 12px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em">KAMAR</div>
+              <div style="font-weight: 600; font-size: 16px; margin-top: 4px">A-12 · Lantai 1</div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px">Kos Anggrek</div>
+            </div>
+
+            <div class="summary-row"><span class="label">Durasi</span><span class="val">6 bulan</span></div>
+            <div class="summary-row"><span class="label">Periode</span><span class="val">1 Jul — 31 Des 2026</span></div>
+            <div class="summary-row"><span class="label">Tarif per bulan</span><span class="val">Rp 1.500.000</span></div>
+            <div class="summary-row"><span class="label">Subtotal (6×)</span><span class="val">Rp 9.000.000</span></div>
+            <div class="summary-row"><span class="label">Diskon paket 6 bulan</span><span class="val" style="color:var(--success-600)">− Rp 300.000</span></div>
+            <div class="summary-row"><span class="label">Biaya admin</span><span class="val">Rp 0</span></div>
+            <div class="summary-row total"><span>Total</span><span>Rp 8.700.000</span></div>
+
+            <button class="btn btn-primary btn-lg mt-6" style="width:100%; justify-content:center">Lanjut ke Pembayaran →</button>
+            <p class="muted" style="font-size: 12px; text-align: center; margin-top: 12px">Dengan melanjutkan Anda menyetujui <a href="#" style="color:var(--accent)">syarat sewa</a></p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

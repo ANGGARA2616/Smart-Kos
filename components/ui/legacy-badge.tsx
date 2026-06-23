@@ -14,11 +14,11 @@ export const Badge: React.FC<BadgeProps> = ({
     const baseStyles = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold';
 
     const variants = {
-        success: 'bg-success-bg text-success',
-        danger: 'bg-danger-bg text-danger',
-        warning: 'bg-warning-bg text-warning',
-        primary: 'bg-blue-100 text-primary',
-        neutral: 'bg-gray-100 text-gray-800',
+        success: 'bg-[#E7F7EE] text-[#16A572]',
+        danger: 'bg-[#FDECEC] text-[#E5484D]',
+        warning: 'bg-[#FFF4E0] text-[#B7791F]',
+        primary: 'bg-[#EAF0FF] text-[#2F6BFF]',
+        neutral: 'bg-[#EEF1F7] text-[#5A6477]',
     };
 
     const classes = `${baseStyles} ${variants[variant]} ${className}`.trim();
