@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardBody } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/legacy-card";
+import { Button } from "@/components/ui/legacy-button";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { loginUser } from "./actions";
@@ -77,8 +77,8 @@ export default function LoginForm() {
                         <p className="text-center text-sm text-gray-500 mt-6 border-t border-gray-100 pt-6">
                             Belum punya akun? <Link href="/register" className="text-primary font-semibold hover:underline">Daftar di sini</Link>
                         </p>
-                        <p className="text-center text-sm text-gray-400 mt-4">
-                            <Link href="/" className="hover:underline">← Kembali ke Halaman Utama</Link>
+                        <p className="text-center mt-4">
+                            <Link href="/" className="inline-flex items-center gap-2 rounded-lg border border-[#D4E1FF] bg-white px-4 py-2 text-sm font-semibold text-[#2F6BFF] shadow-sm transition-colors hover:bg-[#EAF0FF]">Kembali ke Halaman Utama</Link>
                         </p>
                     </form>
                 </CardBody>

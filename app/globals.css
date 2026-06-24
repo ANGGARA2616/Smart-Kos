@@ -1,25 +1,71 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
   --background: #f4faff;
   --foreground: #00374a;
+
+  /* Raw tokens (global defaults = nilai SmartKos teal lama, jadi landing/legacy tidak berubah) */
+  --primary: #1a677c;
+  --primary-hover: #005b6f;
+  --secondary: #6d5778;
+  --muted: #6c757d;
+
+  /* Token khusus shadcn — default netral, aman app-wide (legacy/landing tidak memakainya) */
+  --primary-foreground: #f1faff;
+  --secondary-foreground: #fff7fc;
+  --muted-foreground: #34657b;
+  --card: #ffffff;
+  --card-foreground: #00374a;
+  --popover: #ffffff;
+  --popover-foreground: #00374a;
+  --accent: #dbf1ff;
+  --accent-foreground: #00374a;
+  --destructive: #dc3545;
+  --border: #c1e8ff;
+  --input: #c1e8ff;
+  --ring: #1a677c;
+  --radius: 0.625rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Manrope', var(--font-geist-sans), sans-serif;
+  --font-sans: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
   --font-mono: var(--font-geist-mono);
-  
+
+  /* shadcn token mappings (dipakai komponen shadcn + shell; di-scope di .theme-ngekos) */
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
   /* SmartKos Premium Design Tokens */
-  --color-primary: #1a677c;
-  --color-primary-hover: #005b6f;
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-dim: #005b6f;
   --color-primary-container: #9ee1f9;
   --color-on-primary: #f1faff;
   --color-on-primary-container: #005264;
 
-  --color-secondary: #6d5778;
+  --color-secondary: var(--secondary);
   --color-secondary-container: #f5d9ff;
   --color-on-secondary: #fff7fc;
 
@@ -48,8 +94,42 @@
   --color-danger-bg: #f8d7da;
   --color-warning: #ffc107;
   --color-warning-bg: #fff3cd;
-  --color-muted: #6c757d;
+  --color-muted: var(--muted);
   --color-sidebar: #f8f9fc;
+}
+
+/* ===== Scope tema Ngekos: hanya admin + dashboard ===== */
+/* Komponen di dalam .theme-ngekos memakai palet biru/netral Ngekos. */
+/* Di luar scope (landing, auth) token tetap teal SmartKos. */
+.theme-ngekos {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+  --background: #f4f6fa;
+  --foreground: #0e1424;
+  --primary: #2f6bff;
+  --primary-hover: #1a4fe0;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f3f8;
+  --secondary-foreground: #384151;
+  --muted: #f4f6fa;
+  --muted-foreground: #7b8597;
+  --accent: #eaf0ff;
+  --accent-foreground: #1a4fe0;
+  --card: #ffffff;
+  --card-foreground: #0e1424;
+  --popover: #ffffff;
+  --popover-foreground: #0e1424;
+  --destructive: #e5484d;
+  --border: #eaedf3;
+  --input: #eaedf3;
+  --ring: #2f6bff;
+  --radius: 0.625rem;
+}
+
+@layer base {
+  .theme-ngekos,
+  .theme-ngekos * {
+    border-color: var(--border);
+  }
 }
 
 @media (prefers-color-scheme: dark) {

@@ -1,5 +1,5 @@
-import { Card, CardBody } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/legacy-card";
+import { Button } from "@/components/ui/legacy-button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -8,6 +8,7 @@ import type { StatusKamar } from "@generated/prisma";
 import { notFound } from "next/navigation";
 import { uploadFile } from "@/lib/supabase-storage";
 import Image from "next/image";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 
 export default async function EditKamarPage({
     params,
@@ -22,7 +23,7 @@ export default async function EditKamarPage({
     const errorMsg = resolvedSearchParams?.error;
 
     const backUrl = from === 'penghuni' ? '/admin/penghuni' : '/admin/kamar';
-    const backLabel = from === 'penghuni' ? '← Kembali ke Data Penghuni' : '← Kembali ke Daftar Kamar';
+    const backLabel = from === 'penghuni' ? 'Kembali ke Data Penghuni' : 'Kembali ke Daftar Kamar';
 
     const kamar = await prisma.kamar.findUnique({
         where: { id: resolvedParams.id },
@@ -102,26 +103,25 @@ export default async function EditKamarPage({
         redirect(targetUrl);
     }
 
+    const inputClass = "w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] transition-colors text-sm";
+    const labelClass = "block text-sm font-semibold text-[#384151]";
+
     return (
-        <div className="p-8 bg-gray-50 min-h-full">
-            {/* Header */}
-            <div className="mb-8">
-                <Link href={backUrl} className="text-sm text-gray-500 hover:text-primary mb-2 inline-flex items-center gap-1 font-medium">
-                    {backLabel}
+        <div className="p-6 lg:p-8 min-h-full">
+            {/* Back link */}
+            <div className="mb-6">
+                <Link href={backUrl} className="text-sm text-[#7B8597] hover:text-[#2F6BFF] inline-flex items-center gap-1 font-medium">
+                    <ArrowLeft className="h-4 w-4" strokeWidth={2} /> {backLabel}
                 </Link>
-                <h1 className="text-2xl font-bold text-gray-900 mt-2">Edit Data Kamar</h1>
-                <p className="text-gray-500 text-sm mt-0.5">
-                    Perbarui informasi untuk Kamar #{kamar.nomor_kamar}.
-                </p>
             </div>
 
             {/* Form Card */}
             <div className="max-w-3xl">
-                <Card className="border-none shadow-sm">
+                <Card>
                     <CardBody className="p-8">
                         {errorMsg && (
-                            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl flex items-center gap-3">
-                                <span className="text-xl">⚠️</span>
+                            <div className="mb-6 p-4 bg-[#FDECEC] border border-[#F7CFD0] text-[#E5484D] text-sm font-semibold rounded-xl flex items-center gap-3">
+                                <AlertTriangle className="h-5 w-5 shrink-0" strokeWidth={2} />
                                 <p>{errorMsg}</p>
                             </div>
                         )}
@@ -133,11 +133,11 @@ export default async function EditKamarPage({
 
                             {/* Foto Kamar */}
                             <div className="space-y-3">
-                                <label className="block text-sm font-semibold text-gray-700">
+                                <label className={labelClass}>
                                     Foto Kamar
                                 </label>
                                 {kamar.foto_utama && (
-                                    <div className="relative w-full h-48 rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
+                                    <div className="relative w-full h-48 rounded-xl overflow-hidden border border-[#EAEDF3] bg-[#F4F6FA]">
                                         <Image src={kamar.foto_utama} alt={kamar.tipe} fill className="object-cover" />
                                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-3">
                                             <p className="text-white text-xs font-semibold">Foto saat ini</p>
@@ -148,16 +148,16 @@ export default async function EditKamarPage({
                                     type="file"
                                     name="foto_kamar"
                                     accept="image/*"
-                                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-gray-200 rounded-lg p-1.5 bg-white outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                                    className="w-full text-sm text-[#7B8597] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#EAF0FF] file:text-[#2F6BFF] hover:file:bg-[#DCE6FF] cursor-pointer border border-[#EAEDF3] rounded-lg p-1.5 bg-white outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 transition-all"
                                 />
-                                <p className="text-xs text-gray-400">Kosongkan jika tidak ingin mengubah foto. Maks 5MB.</p>
+                                <p className="text-xs text-[#9AA3B4]">Kosongkan jika tidak ingin mengubah foto. Maks 5MB.</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Nomor Kamar */}
                                 <div className="space-y-2">
-                                    <label htmlFor="nomor_kamar" className="block text-sm font-semibold text-gray-700">
-                                        Nomor Kamar <span className="text-red-500">*</span>
+                                    <label htmlFor="nomor_kamar" className={labelClass}>
+                                        Nomor Kamar <span className="text-[#E5484D]">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -166,14 +166,14 @@ export default async function EditKamarPage({
                                         required
                                         defaultValue={kamar.nomor_kamar}
                                         placeholder="Contoh: 105"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm"
+                                        className={inputClass}
                                     />
                                 </div>
 
                                 {/* Tipe Kamar — Input Manual */}
                                 <div className="space-y-2">
-                                    <label htmlFor="tipe" className="block text-sm font-semibold text-gray-700">
-                                        Tipe Kamar <span className="text-red-500">*</span>
+                                    <label htmlFor="tipe" className={labelClass}>
+                                        Tipe Kamar <span className="text-[#E5484D]">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -182,7 +182,7 @@ export default async function EditKamarPage({
                                         required
                                         defaultValue={kamar.tipe}
                                         placeholder="Contoh: Standard Single, Deluxe Queen"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm"
+                                        className={inputClass}
                                     />
                                 </div>
                             </div>
@@ -191,8 +191,8 @@ export default async function EditKamarPage({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Harga */}
                                 <div className="space-y-2">
-                                    <label htmlFor="harga_per_bulan" className="block text-sm font-semibold text-gray-700">
-                                        Harga per Bulan (Rp) <span className="text-red-500">*</span>
+                                    <label htmlFor="harga_per_bulan" className={labelClass}>
+                                        Harga per Bulan (Rp) <span className="text-[#E5484D]">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -203,32 +203,32 @@ export default async function EditKamarPage({
                                         step="50000"
                                         defaultValue={kamar.harga_per_bulan}
                                         placeholder="Contoh: 1500000"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm"
+                                        className={inputClass}
                                     />
                                 </div>
 
                                 {/* Status */}
                                 <div className="space-y-2">
-                                    <label htmlFor="status" className="block text-sm font-semibold text-gray-700">
-                                        Status Saat Ini <span className="text-red-500">*</span>
+                                    <label htmlFor="status" className={labelClass}>
+                                        Status Saat Ini <span className="text-[#E5484D]">*</span>
                                     </label>
                                     <select
                                         id="status"
                                         name="status"
                                         required
                                         defaultValue={kamar.status}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm bg-white"
+                                        className={inputClass}
                                     >
                                         <option value="KOSONG">Kosong</option>
                                         <option value="TERISI">Terisi</option>
                                         <option value="PERBAIKAN">Dalam Perbaikan</option>
                                     </select>
                                     {penghuniAktif && (
-                                        <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg mt-1">
-                                            <span className="text-amber-600 text-base">⚠️</span>
-                                            <p className="text-xs text-amber-700 font-semibold leading-relaxed">
-                                                Kamar ini sedang ditempati <strong>{penghuniAktif.nama}</strong>. 
-                                                Jika Anda mengubah status ke "Kosong", penghuni akan otomatis dikeluarkan dari kamar ini.
+                                        <div className="flex items-start gap-2 p-3 bg-[#FFF4E0] border border-[#F5E2BD] rounded-lg mt-1">
+                                            <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-[#B7791F]" strokeWidth={2} />
+                                            <p className="text-xs text-[#B7791F] font-semibold leading-relaxed">
+                                                Kamar ini sedang ditempati <strong>{penghuniAktif.nama}</strong>.
+                                                Jika Anda mengubah status ke &quot;Kosong&quot;, penghuni akan otomatis dikeluarkan dari kamar ini.
                                             </p>
                                         </div>
                                     )}
@@ -237,8 +237,8 @@ export default async function EditKamarPage({
 
                             {/* Fasilitas */}
                             <div className="space-y-2">
-                                <label htmlFor="fasilitas" className="block text-sm font-semibold text-gray-700">
-                                    Fasilitas Kamar <span className="text-red-500">*</span>
+                                <label htmlFor="fasilitas" className={labelClass}>
+                                    Fasilitas Kamar <span className="text-[#E5484D]">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -247,19 +247,19 @@ export default async function EditKamarPage({
                                     required
                                     defaultValue={kamar.fasilitas}
                                     placeholder="Contoh: AC, Kasur, Lemari, Meja Belajar, WiFi"
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm"
+                                    className={inputClass}
                                 />
-                                <p className="text-xs text-gray-500">Pisahkan dengan koma.</p>
+                                <p className="text-xs text-[#7B8597]">Pisahkan dengan koma.</p>
                             </div>
 
                             {/* Actions */}
-                            <div className="pt-6 border-t border-gray-100 flex items-center justify-end gap-3 mt-8">
+                            <div className="pt-6 border-t border-[#EAEDF3] flex items-center justify-end gap-3 mt-8">
                                 <Link href={backUrl}>
-                                    <span className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors inline-block cursor-pointer">
+                                    <span className="px-5 py-2.5 text-sm font-semibold text-[#384151] bg-white border border-[#EAEDF3] rounded-lg hover:bg-[#F4F6FA] transition-colors inline-block cursor-pointer">
                                         Batal
                                     </span>
                                 </Link>
-                                <Button type="submit" variant="primary" size="md" className="px-8 shadow-md shadow-primary/20 bg-green-600 hover:bg-green-700 min-w-32">
+                                <Button type="submit" variant="primary" size="md" className="px-8 shadow-md shadow-[#16A572]/20 bg-[#16A572] hover:bg-[#138a60] min-w-32">
                                     Simpan Perubahan
                                 </Button>
                             </div>

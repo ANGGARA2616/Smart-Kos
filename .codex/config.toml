@@ -1,0 +1,7 @@
+[mcp_servers.figma-framelink]
+command = "npx"
+args = [
+    "-y",
+    "figma-developer-mcp",
+    "--stdio",
+]

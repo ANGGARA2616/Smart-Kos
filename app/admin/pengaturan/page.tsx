@@ -1,10 +1,11 @@
-import { Card, CardBody } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/legacy-card";
+import { Button } from "@/components/ui/legacy-button";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { updateKostProfile } from "./actions";
 import Image from "next/image";
+import { Save, CheckCircle2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -37,15 +38,10 @@ export default async function SettingsPage({
     }
 
     return (
-        <div className="p-8 bg-gray-50 min-h-full">
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Pengaturan Kost</h1>
-                <p className="text-gray-500 text-sm mt-0.5">Kelola identitas utama, alamat, dan kontak kost Anda.</p>
-            </div>
-
+        <div className="p-6 lg:p-8 min-h-full">
             {isSuccess && (
-                <div className="mb-6 max-w-3xl p-4 bg-green-50/50 border border-green-200 rounded-lg flex items-center gap-3 text-green-700">
-                    <span className="text-xl">✅</span>
+                <div className="mb-6 max-w-3xl p-4 bg-[#E7F7EE] border border-[#CFEBD9] rounded-xl flex items-center gap-3 text-[#16A572]">
+                    <CheckCircle2 className="h-5 w-5 shrink-0" strokeWidth={2} />
                     <p className="font-semibold text-sm">Perubahan pengaturan berhasil disimpan dan sudah rilis ke Halaman Utama!</p>
                 </div>
             )}
@@ -54,31 +50,31 @@ export default async function SettingsPage({
                 <input type="hidden" name="id" value={profile.id} />
 
                 {/* ================= SECTION 1: PROFIL UTAMA ================= */}
-                <Card className="border-none shadow-sm">
+                <Card className="shadow-sm">
                     <CardBody className="p-8 space-y-6">
-                        <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">1. Profil Utama Kos</h2>
+                        <h2 className="text-xl font-bold text-[#0E1424] border-b border-[#EAEDF3] pb-3 mb-6">1. Profil Utama Kos</h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-gray-700">Nama Kos <span className="text-red-500">*</span></label>
+                                <label className="text-sm font-semibold text-[#384151]">Nama Kos <span className="text-red-500">*</span></label>
                                 <input
                                     type="text" name="nama_kost" required defaultValue={profile.nama_kost}
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                    className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-gray-700">Nomor WhatsApp <span className="text-red-500">*</span></label>
+                                <label className="text-sm font-semibold text-[#384151]">Nomor WhatsApp <span className="text-red-500">*</span></label>
                                 <input
                                     type="text" name="nomor_kontak" required defaultValue={profile.nomor_kontak}
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                    className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                                 />
                                 <p className="text-xs text-gray-500">Angka berurutan, misal: 081234567890</p>
                             </div>
                         </div>
 
                         <div className="space-y-4 pt-2">
-                            <label className="text-sm font-semibold text-gray-700">Logo Kos</label>
+                            <label className="text-sm font-semibold text-[#384151]">Logo Kos</label>
                             {profile?.logo_url && (
                                 <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center">
                                     <Image src={profile.logo_url} alt="Logo" fill className="object-contain p-2" />
@@ -92,30 +88,30 @@ export default async function SettingsPage({
                         </div>
 
                         <div className="space-y-2 pt-2">
-                            <label className="text-sm font-semibold text-gray-700">Slogan / Deskripsi Singkat <span className="text-red-500">*</span></label>
+                            <label className="text-sm font-semibold text-[#384151]">Slogan / Deskripsi Singkat <span className="text-red-500">*</span></label>
                             <textarea
                                 name="deskripsi" required rows={3} defaultValue={profile.deskripsi}
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm resize-none"
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm resize-none"
                             />
                         </div>
                     </CardBody>
                 </Card>
 
                 {/* ================= SECTION 2: TAMPILAN BANNER ================= */}
-                <Card className="border-none shadow-sm">
+                <Card className="shadow-sm">
                     <CardBody className="p-8 space-y-6">
-                        <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">2. Tampilan Halaman Utama (Banner)</h2>
+                        <h2 className="text-xl font-bold text-[#0E1424] border-b border-[#EAEDF3] pb-3 mb-6">2. Tampilan Halaman Utama (Banner)</h2>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700">Teks Utama Banner (Visual Hero) <span className="text-red-500">*</span></label>
+                            <label className="text-sm font-semibold text-[#384151]">Teks Utama Banner (Visual Hero) <span className="text-red-500">*</span></label>
                             <input
                                 type="text" name="hero_title" required defaultValue={profile.hero_title}
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                             />
                         </div>
 
                         <div className="space-y-4 pt-2">
-                            <label className="text-sm font-semibold text-gray-700">Slider Foto (Pilih Banyak Sekaligus)</label>
+                            <label className="text-sm font-semibold text-[#384151]">Slider Foto (Pilih Banyak Sekaligus)</label>
                             {profile?.hero_images && profile.hero_images.length > 0 && (
                                 <div className="flex gap-3 overflow-x-auto pb-2">
                                     {profile.hero_images.map((src, idx) => (
@@ -127,13 +123,13 @@ export default async function SettingsPage({
                             )}
                             <input
                                 type="file" name="hero_images" accept="image/*" multiple
-                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors"
+                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#EAF0FF] file:text-[#2F6BFF] hover:file:bg-[#DCE6FF] transition-colors"
                             />
                             <p className="text-xs text-gray-500">Akan membuat efek animasi gonta-ganti *(slideshow)* otomatis di beranda (Tekan Shift/Ctrl untuk multi-select).</p>
                         </div>
                         
                         <div className="space-y-4 pt-4 border-t border-gray-50">
-                            <label className="text-sm font-semibold text-gray-700 block mb-2 cursor-pointer opacity-70">Opsi Alternatif: Banner Tunggal Saja</label>
+                            <label className="text-sm font-semibold text-[#384151] block mb-2 cursor-pointer opacity-70">Opsi Alternatif: Banner Tunggal Saja</label>
                             {profile?.foto_hero && (
                                 <div className="relative w-full max-w-sm h-32 rounded-lg overflow-hidden border border-gray-200 opacity-80">
                                     <Image src={profile.foto_hero} alt="Banner Saat Ini" fill className="object-cover" />
@@ -149,32 +145,32 @@ export default async function SettingsPage({
                 </Card>
 
                 {/* ================= SECTION 3: LOKASI & PEMBAYARAN ================= */}
-                <Card className="border-none shadow-sm">
+                <Card className="shadow-sm">
                     <CardBody className="p-8 space-y-6">
-                        <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">3. Lokasi & Pembayaran</h2>
+                        <h2 className="text-xl font-bold text-[#0E1424] border-b border-[#EAEDF3] pb-3 mb-6">3. Lokasi & Pembayaran</h2>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700">Alamat Lengkap <span className="text-red-500">*</span></label>
+                            <label className="text-sm font-semibold text-[#384151]">Alamat Lengkap <span className="text-red-500">*</span></label>
                             <textarea
                                 name="alamat" required rows={2} defaultValue={profile.alamat}
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm resize-none"
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm resize-none"
                             />
                         </div>
 
                         <div className="space-y-2 pt-2">
-                            <label className="text-sm font-semibold text-gray-700">Tautan Peta (Google Maps Embed SRC) untuk Halaman Utama</label>
+                            <label className="text-sm font-semibold text-[#384151]">Tautan Peta (Google Maps Embed SRC) untuk Halaman Utama</label>
                             <input
                                 type="text" name="link_gmaps" defaultValue={profile?.link_gmaps || ""} placeholder="https://www.google.com/maps/embed?pb=..."
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                             />
                             <p className="text-xs text-gray-500">Ambil URL dari tag `src="..."` di Embed Map Google Maps (hanya digunakan untuk tampilan Maps iFrame Homepage).</p>
                         </div>
 
                         <div className="space-y-2 pt-2 border-t border-gray-100 mt-2 pt-4">
-                            <label className="text-sm font-semibold text-gray-700">Tautan Tombol "Buka di Google Maps"</label>
+                            <label className="text-sm font-semibold text-[#384151]">Tautan Tombol "Buka di Google Maps"</label>
                             <input
                                 type="text" name="link_gmaps_button" defaultValue={profile?.link_gmaps_button || ""} placeholder="https://maps.google.com/..."
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                             />
                             <p className="text-xs text-gray-500">Gunakan tautan bagikan / share biasa dari Google Maps (jangan tipe embed) untuk ketika tombol Buka ditekan.</p>
                         </div>
@@ -183,30 +179,30 @@ export default async function SettingsPage({
                             <h3 className="font-bold text-gray-800 mb-4">Pengaturan Transfer Pembayaran</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Nama Bank <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-medium text-[#384151]">Nama Bank <span className="text-red-500">*</span></label>
                                     <input
                                         type="text" name="nama_bank" required defaultValue={profile?.nama_bank || "BCA"} placeholder="Cth: BCA"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                        className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Nomor Rekening <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-medium text-[#384151]">Nomor Rekening <span className="text-red-500">*</span></label>
                                     <input
                                         type="text" name="nomor_rekening" required defaultValue={profile?.nomor_rekening || ""} placeholder="Tanpa spasi"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                        className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                                     />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-sm font-medium text-gray-700">Atas Nama Rekening <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-medium text-[#384151]">Atas Nama Rekening <span className="text-red-500">*</span></label>
                                     <input
                                         type="text" name="nama_pemilik_rekening" required defaultValue={profile?.nama_pemilik_rekening || ""} placeholder="Nama pemilik sah"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                        className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 text-[#0E1424] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/25 focus:border-[#C9D6FF] text-sm"
                                     />
                                 </div>
                             </div>
                             
                             <div className="space-y-4 pt-6">
-                                <label className="text-sm font-medium text-gray-700">Foto Barcode QRIS Alternatif</label>
+                                <label className="text-sm font-medium text-[#384151]">Foto Barcode QRIS Alternatif</label>
                                 {profile?.foto_qris && (
                                     <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
                                         <Image src={profile.foto_qris} alt="QRIS" fill className="object-cover" />
@@ -222,8 +218,8 @@ export default async function SettingsPage({
                 </Card>
 
                 <div className="flex justify-end pt-4 sticky bottom-6 z-10 transition-transform">
-                    <Button type="submit" variant="primary" className="px-6 py-2.5 shadow-md shadow-primary/20 bg-primary hover:bg-primary/90 text-sm font-bold rounded-lg flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px]">save</span>
+                    <Button type="submit" variant="primary" className="px-6 py-2.5 shadow-md shadow-[#2F6BFF]/20 text-sm font-bold rounded-lg flex items-center gap-2">
+                        <Save className="h-[18px] w-[18px]" strokeWidth={2} />
                         Simpan Semua Pengaturan
                     </Button>
                 </div>

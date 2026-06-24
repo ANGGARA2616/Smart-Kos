@@ -41,8 +41,8 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
     return (
         <div className="max-w-2xl mx-auto space-y-8">
             {/* Profile Info */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-100">
+            <div className="bg-white rounded-2xl shadow-sm border border-[#EAEDF3] overflow-hidden">
+                <div className="px-6 py-5 border-b border-[#EAEDF3]">
                     <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                         <span className="material-symbols-outlined text-xl text-primary">person</span>
                         Informasi Profil
@@ -57,7 +57,7 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
                             name="nama"
                             defaultValue={user.nama}
                             required
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#EAEDF3] text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                         />
                     </div>
                     <div>
@@ -66,7 +66,7 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
                             type="email"
                             value={user.email}
                             disabled
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-100 text-sm bg-gray-50 text-gray-400 cursor-not-allowed"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#EAEDF3] text-sm bg-gray-50 text-gray-400 cursor-not-allowed"
                         />
                         <p className="text-[11px] text-gray-400 mt-1">Email tidak dapat diubah.</p>
                     </div>
@@ -78,7 +78,7 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
                             defaultValue={user.no_hp}
                             required
                             placeholder="08xxxxxxxxxx"
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#EAEDF3] text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                         />
                     </div>
 
@@ -103,8 +103,8 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
             </div>
 
             {/* Change Password */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-100">
+            <div className="bg-white rounded-2xl shadow-sm border border-[#EAEDF3] overflow-hidden">
+                <div className="px-6 py-5 border-b border-[#EAEDF3]">
                     <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                         <span className="material-symbols-outlined text-xl text-primary">lock</span>
                         Ganti Password
@@ -119,7 +119,7 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
                             name="current_password"
                             required
                             placeholder="••••••••"
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#EAEDF3] text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                         />
                     </div>
                     <div>
@@ -130,7 +130,7 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
                             required
                             minLength={6}
                             placeholder="Minimal 6 karakter"
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#EAEDF3] text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                         />
                     </div>
                     <div>
@@ -141,7 +141,7 @@ export default function ProfilForm({ user }: { user: { nama: string; email: stri
                             required
                             minLength={6}
                             placeholder="Ulangi password baru"
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#EAEDF3] text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                         />
                     </div>
 

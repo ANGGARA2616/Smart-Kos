@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition, useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { createLaporan } from "./actions";
 
 export default function LaporKerusakanForm() {
@@ -31,7 +31,7 @@ export default function LaporKerusakanForm() {
 
             <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-gray-700">Kategori Kendala</label>
-                <select name="kategori" required className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm bg-white text-gray-900">
+                <select name="kategori" required className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm bg-white text-gray-900">
                     <option value="">Pilih Kategori...</option>
                     <option value="AC / Pendingin">AC / Pendingin</option>
                     <option value="Kelistrikan & Lampu">Kelistrikan & Lampu</option>
@@ -48,7 +48,7 @@ export default function LaporKerusakanForm() {
                     required
                     rows={4}
                     placeholder="Ceritakan sedetail mungkin apa masalahnya..."
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm text-gray-900 resize-none"
+                    className="w-full border border-[#EAEDF3] rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm text-gray-900 resize-none"
                 />
             </div>
 

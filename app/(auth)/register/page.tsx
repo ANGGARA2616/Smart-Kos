@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardBody } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardBody } from "@/components/ui/legacy-card";
+import { Button } from "@/components/ui/legacy-button";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { registerUser } from "./actions";

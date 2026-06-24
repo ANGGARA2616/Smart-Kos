@@ -1,9 +1,9 @@
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Card, CardBody } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { Card, CardBody } from "@/components/ui/legacy-card";
+import { Button } from "@/components/ui/legacy-button";
+import { Badge } from "@/components/ui/legacy-badge";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";
@@ -55,8 +55,8 @@ export default async function DashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Info Kamar Card */}
-                    <Card className="shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="h-32 bg-gray-200 relative">
+                    <Card className="shadow-sm border border-[#EAEDF3] overflow-hidden">
+                        <div className="h-32 bg-[#EAEDF3] relative">
                             {user.kamar.foto_utama ? (
                                 <Image src={user.kamar.foto_utama} alt={user.kamar.tipe} fill className="object-cover" />
                             ) : (
@@ -78,19 +78,19 @@ export default async function DashboardPage() {
                                     <p className="text-xs text-gray-500 mb-0.5 font-medium">Harga / Bulan</p>
                                     <p className="text-sm font-bold text-primary">Rp {user.kamar.harga_per_bulan.toLocaleString('id-ID')}</p>
                                 </div>
-                                <div className="pt-3 border-t border-gray-100">
+                                <div className="pt-3 border-t border-[#EAEDF3]">
                                     <p className="text-xs text-gray-500 mb-0.5 font-medium">Tanggal Masuk (Disetujui)</p>
                                     <p className="text-sm font-semibold text-gray-900">{tanggalMasuk}</p>
                                 </div>
 
-                                <div className="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between">
+                                <div className="pt-4 mt-2 border-t border-[#EAEDF3] flex items-center justify-between">
                                     <div>
                                         <p className="text-xs text-gray-500 mb-0.5 font-medium">Sewa Berakhir Pada</p>
-                                        <p className="text-sm font-semibold text-orange-600">{tanggalBerakhir}</p>
+                                        <p className="text-sm font-semibold text-[#B7791F]">{tanggalBerakhir}</p>
                                     </div>
 
                                     {pendingExtension ? (
-                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-200">
+                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#B7791F] bg-[#FFF4E0] px-3 py-1.5 rounded-full border border-[#F5E2BD]">
                                             <span className="material-symbols-outlined text-[14px]">hourglass_empty</span> Menunggu Verifikasi
                                         </div>
                                     ) : (
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
                             </CardBody>
                         </Card>
 
-                        <Card className="shadow-sm border border-gray-100">
+                        <Card className="shadow-sm border border-[#EAEDF3]">
                             <CardBody className="p-6 flex flex-col items-center justify-center text-center">
                                 <span className="material-symbols-outlined text-[40px] text-gray-500 mb-3">support_agent</span>
                                 <h3 className="text-base font-bold text-gray-900 mb-2">Hubungi Pengelola</h3>
@@ -142,13 +142,13 @@ export default async function DashboardPage() {
     // ==========================================
     if (activeBooking && activeBooking.status === "PENDING") {
         return (
-            <div className="max-w-xl mx-auto text-center mt-20 bg-white rounded-3xl shadow-sm border border-gray-100 p-12">
-                <span className="material-symbols-outlined text-[64px] text-orange-500 mb-6 block">hourglass_empty</span>
+            <div className="max-w-xl mx-auto text-center mt-20 bg-white rounded-3xl shadow-sm border border-[#EAEDF3] p-12">
+                <span className="material-symbols-outlined text-[64px] text-[#F2A50C] mb-6 block">hourglass_empty</span>
                 <h1 className="text-2xl font-bold text-gray-900 mb-4">Menunggu Konfirmasi Admin</h1>
                 <p className="text-gray-600 mb-8 leading-relaxed text-sm">
                     Terima kasih! Bukti pembayaran Anda untuk kamar <strong>{activeBooking.kamar.tipe} (No. {activeBooking.kamar.nomor_kamar})</strong> sedang kami verifikasi. Proses verifikasi manual memakan waktu 1x24 jam.
                 </p>
-                <div className="bg-orange-50 text-orange-700 p-4 rounded-xl text-sm font-semibold border border-orange-200 inline-block px-8 py-3 w-full uppercase tracking-wider">
+                <div className="bg-[#FFF4E0] text-[#B7791F] p-4 rounded-xl text-sm font-semibold border border-[#F5E2BD] inline-block px-8 py-3 w-full uppercase tracking-wider">
                     Status Pesanan: PENDING REVIEW
                 </div>
             </div>
@@ -191,9 +191,9 @@ export default async function DashboardPage() {
                 ) : dataKamar.map((room) => (
                     <Card
                         key={room.id}
-                        className="flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-xl overflow-hidden border border-gray-100"
+                        className="flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-xl overflow-hidden border border-[#EAEDF3]"
                     >
-                        <div className="relative w-full h-52 group overflow-hidden bg-gray-200 flex items-center justify-center text-gray-400">
+                        <div className="relative w-full h-52 group overflow-hidden bg-[#EAEDF3] flex items-center justify-center text-gray-400">
                             {room.foto_utama ? (
                                 <Image
                                     src={room.foto_utama}

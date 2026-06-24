@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { logoutAction } from "@/app/actions";
 
 export default function LandingNavbar({ session, namaKost = "SmartKos", logoUrl }: { session: any, namaKost?: string, logoUrl?: string | null }) {
